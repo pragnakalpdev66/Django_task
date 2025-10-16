@@ -1,0 +1,97 @@
+{% extends 'movies/base.html' %}
+
+{% block title %}1.Home Page - Movie Management{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <!-- head-search -->
+    <div class="head-search-container">
+        <h2>Welcome to Movie Management System</h2>
+        <p>Browse and manage your movie collection</p>
+        <form class="search-box" method="get" action="{% url 'movies:movie' %}" role="search">
+            <input class="search-input" type="search" placeholder="Search for movies, actors, directors..."/>
+            <button class="btn" type="submit">Search</button>
+        </form>
+        {% comment %}
+        <!-- <form method="get" action="{% url 'movie_list' %}">
+            <input type="text" name="q" placeholder="Search movies...">
+            <button type="submit">Search</button>
+        </form> -->
+        {% endcomment %}
+    </div>
+    <!-- content -->
+    <div class="content">
+        <h2 class="block-title">Browse by Genre</h2><hr>
+        <div class="genre-items">
+            {% comment %} <a href="{% url 'Action' %}" class="genre-item">Action</a>
+            <a href="{% url 'Comedy' %}" class="genre-item">Comedy</a>
+            <a href="{% url 'Thriller' %}" class="genre-item">Thriller</a>
+            <a href="{% url 'Horror' %}" class="genre-item">Horror</a>
+            <a href="{% url 'Romance' %}" class="genre-item">Romance</a>
+            <a href="{% url 'Sci-Fi' %}" class="genre-item">Sci-Fi</a>
+            <a href="{% url 'Documentory' %}" class="genre-item">Documentory</a>
+            <a href="{% url 'Bio-graphy' %}" class="genre-item">Bio-graphy</a> {% endcomment %}
+        </div>
+        <h2 class="block-title">Popular Movies</h2><hr>
+        <div class="movie-block">
+            <div class="movie-card">
+                <div class="movie-poster">img</div>
+                <div class="movie-info">
+                    <h3>Movie-Title</h3>
+                    <p>release-year * genre * duration</p>
+                    <span>rating</span>
+                </div>
+            </div>
+            <!-- <hr> -->
+            <div class="movie-card">
+                <div class="movie-poster">img</div>
+                <div class="movie-info">
+                    <h3>Movie-Title</h3>
+                    <p>release-year * genre * duration</p>
+                    <span>rating</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster">img</div>
+                <div class="movie-info">
+                    <h3>Movie-Title</h3>
+                    <p>release-year * genre * duration</p>
+                    <span>rating</span>
+                </div>
+            </div>
+            {% comment %} <div class="movie-card">
+                <div class="movie-poster">img</div>
+                <div class="movie-info">
+                    <h3>Movie-Title</h3>
+                    <p>release-year * genre * duration</p>
+                    <span>rating</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster">img</div>
+                <div class="movie-info">
+                    <h3>Movie-Title</h3>
+                    <p>release-year * genre * duration</p>
+                    <span>rating</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster">img</div>
+                <div class="movie-info">
+                    <h3>Movie-Title</h3>
+                    <p>release-year * genre * duration</p>
+                    <span>rating</span>
+                </div>
+            </div>
+            <div class="movie-card">
+                <div class="movie-poster">img</div>
+                <div class="movie-info">
+                    <h3>Movie-Title</h3>
+                    <p>release-year * genre * duration</p>
+                    <span>rating</span>
+                </div>
+            </div> {% endcomment %}
+        </div>
+    </div>
+</div>
+{% endblock %}

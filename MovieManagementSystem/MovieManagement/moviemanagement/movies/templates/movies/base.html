@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Movie Management{% endblock %}</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
+</head>
+<body>
+    <!-- whole-page -->
+    <div class="whole-container">
+            
+        <!-- navbar -->
+        <div class="navbar">
+            <div><h3>Movie Management System</h3></div>
+            <div class="navbar-navitems">
+                <ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:movie' %}">Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:genre' %}">Genre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:people' %}">People</a>
+                    </li> 
+                </ul> 
+            </div>
+            <div class="add-movie-btn">
+                <button><a href="{% url 'movies:addmovie' %}">Add Movie</a></button>
+            </div>
+        </div>
+        <hr>
+
+        <!-- Page content -->
+        <div class="main-content">
+                {% block content %}
+                {% endblock %}
+        </div>
+        
+        <footer>
+            <hr>
+            <p>© 2025 Movie Management System. All rights reserved.</p>
+        </footer>
+        
+    </div>
+  </body>
+</html>
