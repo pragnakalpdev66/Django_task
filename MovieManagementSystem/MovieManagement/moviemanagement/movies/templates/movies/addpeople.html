@@ -7,7 +7,32 @@
     <div></div>
     <h1>add People Page</h1>
     <div>
-        {% comment %} <a class="nav-link" href="{% url 'movies:addgenre' %}">Add Genre</a> {% endcomment %}
+        <form action="{% url 'movies:addpeople' %}" method="post">
+            {% csrf_token %}
+            <div><label for="person-name">Genre Name</label>
+                <input type="text" name="person_name" id="person-name"placeholder="Enter full name"/>
+            </div>
+            <div class="role-type">
+                <label for="role_type">Role:</label>
+                <select id="role_type" name="role_type" required>
+                    {% for value, label in role_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="birth-date">
+                add birthdate
+            </div>
+            <div class="biography">
+                <label for="biography">Genre Name</label>
+                <input type="text" name="biography" id="biography"placeholder="Enter biography..."/>
+            </div>
+            <div class="profile-photo"> choose file</div>
+            <div class="btn">
+                <button type="submit">Save Person</button>
+                <button>Cancel</button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock content %}

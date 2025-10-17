@@ -3,11 +3,18 @@
 {% block title %}6.People List Page{% endblock %}
 
 {% block content %}
-<div class="movie-container">
+<div class="people-container">
     <div></div>
     <h1>People Page</h1>
     <div>
-        <a class="nav-link" href="{% url 'movies:addpeople' %}">Add People</a>
+        <a class="nav-link" href="{% url 'movies:addpeople' %}">Add New People</a>
+    </div>
+    <div>
+        {% for person in people %}
+        <p>{{ person.person_name }}</p>
+        {% empty %}
+        <p>No person found.</p>
+        {% endfor %}
     </div>
 </div>
 {% endblock content %}

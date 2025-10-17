@@ -1,13 +1,22 @@
 {% extends 'movies/base.html' %}
-
 {% block title %}5.Genre List Page{% endblock %}
 
 {% block content %}
-<div class="movie-container">
+<div class="genre-container">
     <div></div>
     <h1>Genre Page</h1>
     <div>
-        <a class="nav-link" href="{% url 'movies:addgenre' %}">Add Genre</a>
+        <a class="nav-link" href="{% url 'movies:addgenre' %}">Add New Genre</a>
+    </div>
+    <div>
+        {% comment %} {% for genre in genres %}
+            {{ genre.genre_name }}
+        {% endfor %} {% endcomment %}
+        {% for genre in genres %}
+        <p>{{ genre.genre_name }}</p>
+        {% empty %}
+        <p>No genres found.</p>
+        {% endfor %}
     </div>
 </div>
 {% endblock content %}
