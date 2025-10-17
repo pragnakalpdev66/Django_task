@@ -5,10 +5,14 @@ app_name = "movies"
 
 urlpatterns = [
     path('homepage/', views.HomePageView, name='home'),
+
     path('moviepage/', views.MoviePageView, name='movie'),
-    path('genrepage/', views.GenrePageView, name='genre'),
-    path('peoplepage/', views.PeoplePageView, name='people'),
     path('addmoviepage/', views.AddMovieView, name='addmovie'),
+    path('movieDetailpage/', views.MovieDetailView, name='movieDetail'),
+    
+    path('genrepage/', views.GenrePageView, name='genre'),
     path('addgenrepage/', views.AddGenreView, name='addgenre'),
-    path('addpeoplepage/', views.AddPeopleView, name='addpeople') 
+    
+    path('peoplepage/', views.PeoplePageView, name='people'),
+    path('addpeoplepage/', views.AddPeopleView, name='addpeople'),
 ]

@@ -3,7 +3,18 @@
 
 {% block content %}
 <div class="movie-container">
-    <div></div>
-    <h1>Movie List Page</h1>
+    <div class="head-container"></div>
+    <h1>All Movies</h1>
+    <div>
+        <button><a class="nav-link" href="{% url 'movies:addmovie' %}">Add New Movie</a></button>
+    </div>
+    <div class="filter-container">
+        {% comment %} filter section {% endcomment %}
+    </div>
+    <hr>
+    <div class="movies-section">
+        <table>movies</table>
+        <button><a class="nav-link" href="{% url 'movies:movieDetail' %}">View</a></button>
+    </div>
 </div>
 {% endblock content %}

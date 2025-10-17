@@ -35,12 +35,14 @@
         <h2 class="block-title">Popular Movies</h2><hr>
         <div class="movie-block">
             <div class="movie-card">
+                <a class="nav-link" href="{% url 'movies:movieDetail' %}">
                 <div class="movie-poster">img</div>
                 <div class="movie-info">
                     <h3>Movie-Title</h3>
                     <p>release-year * genre * duration</p>
                     <span>rating</span>
                 </div>
+                </a>
             </div>
             <!-- <hr> -->
             <div class="movie-card">
