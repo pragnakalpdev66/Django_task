@@ -1,20 +1,41 @@
 {% extends 'movies/base.html' %}
 
-{% block title %}6.People List Page{% endblock %}
+{% block title %}6.People (Actor/Director) {% endblock %}
 
 {% block content %}
 <div class="people-container">
-    <div></div>
-    <h1>People Page</h1>
-    <div>
-        <a class="nav-link" href="{% url 'movies:addpeople' %}">Add New People</a>
+    <div class="head-content">
+        <h1>All People</h1>
+        <button><a class="nav-link" href="{% url 'movies:addpeople' %}">+ Add New Person</a></button>
     </div>
-    <div>
-        {% for person in people %}
-        <p>{{ person.person_name }}</p>
-        {% empty %}
-        <p>No person found.</p>
-        {% endfor %}
+
+    <div class="role-type">
+        <label for="role_type">Role Type</label>
+        <select id="role_type" name="role_type">
+            {% for value, label in people. %}
+                <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="people-section">
+        {% if people %}
+        <ul>
+            {% for person in people %}
+            <li>
+                {{ person.person_name }}
+                {% if person.role_type %}{{ person.role_type }}{% endif %}
+                {% if person.birth_date %} Born: {{ person.birth_date }}{% endif %}
+                total count of movies acted/directed
+                <button><a href="{% url 'movies:personDetail' %}">View</a></button>
+                <button><a href="{% url 'movies:addpeople' %}">Edit</a></button>
+                <button>Delete</a></button>
+            </li>
+            {% empty %}
+            <p>No person found.</p>
+            {% endfor %}
+        </ul>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}

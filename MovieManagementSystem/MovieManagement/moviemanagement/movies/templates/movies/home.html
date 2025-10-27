@@ -12,6 +12,8 @@
             <input class="search-input" type="search" placeholder="Search for movies, actors, directors..."/>
             <button class="btn" type="submit">Search</button>
         </form>
+        <hr>
+        <br>
         {% comment %}
         <!-- <form method="get" action="{% url 'movie_list' %}">
             <input type="text" name="q" placeholder="Search movies...">
@@ -23,15 +25,19 @@
     <div class="content">
         <h2 class="block-title">Browse by Genre</h2><hr>
         <div class="genre-items">
-            {% comment %} <a href="{% url 'Action' %}" class="genre-item">Action</a>
-            <a href="{% url 'Comedy' %}" class="genre-item">Comedy</a>
-            <a href="{% url 'Thriller' %}" class="genre-item">Thriller</a>
-            <a href="{% url 'Horror' %}" class="genre-item">Horror</a>
-            <a href="{% url 'Romance' %}" class="genre-item">Romance</a>
-            <a href="{% url 'Sci-Fi' %}" class="genre-item">Sci-Fi</a>
-            <a href="{% url 'Documentory' %}" class="genre-item">Documentory</a>
-            <a href="{% url 'Bio-graphy' %}" class="genre-item">Bio-graphy</a> {% endcomment %}
+            {% comment %} {% if genres %} {% endcomment %}
+            <ul>
+                {% for genre in genres %}
+                <li>
+                    <div><a href="{% url 'movies:movie' %}">{{ genre.genre_name }}</a></div>
+                </li>
+                {% empty %}
+                <p>No genre found.</p>
+                {% endfor %}
+            </ul>
+            {% comment %} {% endif %} {% endcomment %}
         </div>
+        <br>
         <h2 class="block-title">Popular Movies</h2><hr>
         <div class="movie-block">
             <div class="movie-card">
@@ -61,38 +67,6 @@
                     <span>rating</span>
                 </div>
             </div>
-            {% comment %} <div class="movie-card">
-                <div class="movie-poster">img</div>
-                <div class="movie-info">
-                    <h3>Movie-Title</h3>
-                    <p>release-year * genre * duration</p>
-                    <span>rating</span>
-                </div>
-            </div>
-            <div class="movie-card">
-                <div class="movie-poster">img</div>
-                <div class="movie-info">
-                    <h3>Movie-Title</h3>
-                    <p>release-year * genre * duration</p>
-                    <span>rating</span>
-                </div>
-            </div>
-            <div class="movie-card">
-                <div class="movie-poster">img</div>
-                <div class="movie-info">
-                    <h3>Movie-Title</h3>
-                    <p>release-year * genre * duration</p>
-                    <span>rating</span>
-                </div>
-            </div>
-            <div class="movie-card">
-                <div class="movie-poster">img</div>
-                <div class="movie-info">
-                    <h3>Movie-Title</h3>
-                    <p>release-year * genre * duration</p>
-                    <span>rating</span>
-                </div>
-            </div> {% endcomment %}
         </div>
     </div>
 </div>

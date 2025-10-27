@@ -1,56 +1,90 @@
 {% extends 'movies/base.html' %}
+
+{% block title %}9.Mange Movie Cast and Languages{% endblock title %} 
+
 {% block content %}
-<h2>Manage Cast and Languages for {{ movie.title }}</h2>
+<div class="movie-title">
+    <h2>Manage Cast and Languages for {{ movie.title }}</h2>
+</div>
 
-<form method="POST">
-    {% csrf_token %}
-    <h3>Add Cast</h3>
-    <label>Actor:</label>
-    <select name="actor">
-        <option value="">Select Actor</option>
-        {% for actor in actors %}
-            <option value="{{ actor.id }}">{{ actor.name }}</option>
+<div class="cast-container">
+    <div class="cast-form">
+        <form method="POST">
+            {% csrf_token %}
+            <h3>Movie Cast</h3>
+            <div>
+                <label>Select Actor</label>
+                <select name="actor">
+                    <option value="">Choose an Actor...</option>
+                    {% for actor in actors %}
+                        <option value="{{ actor.id }}">{{ actor.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>Character Name</label>
+                <input type="text" name="character_name" placeholder="Enter character name">
+            </div>
+            <div class="btn-add-cast-lang">
+            <button type="submit" name="add_cast">+ Add to Cast</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="cast-list">
+        <h4>Existing Cast:</h4>
+        <ul>
+        {% for c in cast_list %}
+            <li>{{ c.person.name }} as {{ c.character_name }}</li>
+        {% empty %}
+            <li>No cast added yet.</li>
         {% endfor %}
-    </select>
-    <input type="text" name="character_name" placeholder="Character Name">
-    <button type="submit" name="add_cast">Add to Cast</button>
-</form>
-
-<h4>Existing Cast:</h4>
-<ul>
-{% for c in cast_list %}
-    <li>{{ c.person.name }} as {{ c.character_name }}</li>
-{% empty %}
-    <li>No cast added yet.</li>
-{% endfor %}
-</ul>
-
+        </ul>
+    </div>
+    
+</div>
 <hr>
 
-<form method="POST">
-    {% csrf_token %}
-    <h3>Add Language</h3>
-    <select name="language">
-        <option value="">Select Language</option>
-        {% for lang in languages %}
-            <option value="{{ lang.id }}">{{ lang.name }}</option>
+<div class="lang-container">
+    <div class="lang-form">
+        <form method="POST">
+            {% csrf_token %}
+            <h3>Movie Language</h3>
+            <div>
+                <label>Select Language</label>
+                <select name="language">
+                    <option value="">Choose a Language...</option>
+                    {% for lang in languages %}
+                        <option value="{{ lang.id }}">{{ lang.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>  
+            <div class="btn-add-cast-lang">      
+            <button type="submit" name="add_language">+ Add Language</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="lang-list">
+        <h4>Existing Languages:</h4>
+        <ul>
+        {% for lang in language_list %}
+            <li>{{ lang.language.name }}</li>
+        {% empty %}
+            <li>No languages added yet.</li>
         {% endfor %}
-    </select>
-    <button type="submit" name="add_language">Add Language</button>
-</form>
+        </ul>
+    </div>
+</div>
 
-<h4>Existing Languages:</h4>
-<ul>
-{% for lang in language_list %}
-    <li>{{ lang.language.name }}</li>
-{% empty %}
-    <li>No languages added yet.</li>
-{% endfor %}
-</ul>
-
-<form method="POST">
-    {% csrf_token %}
-    <button type="submit" name="done">Done</button>
-</form>
+<div class="bottom-btns">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="btn-9">
+            <div><button><a href="{% url 'movies:movie' %}">Back to Movie</a></button></div>
+            <div><button type="submit" name="done">Done</button></div>
+        </div>
+    </form>
+</div>
 
 {% endblock %}
