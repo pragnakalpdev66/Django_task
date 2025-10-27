@@ -5,7 +5,7 @@
 {% block content %}
 <div class="movie-container">
     <div></div>
-    <h1>add People Page</h1>[17/Oct/2025 13:29:57] "GET /movies/homepage/ HTTP/1.1" 200 3382
+    <h1>add People Page</h1>
     <div>
         <form action="{% url 'movies:addpeople' %}" method="post">
             {% csrf_token %}
@@ -23,7 +23,7 @@
 
             <div class="birth-date">
             <label for="birth-date">Birthdate:</label>
-            <input type="number" name="birth-date" id="birth-date" placeholder="17/Oct/2000">
+            <input type="date" name="birth-date" id="birth-date" placeholder="17/Oct/2000">
             </div>
 
             <div class="biography">
