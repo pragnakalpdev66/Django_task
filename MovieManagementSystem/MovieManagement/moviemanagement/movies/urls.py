@@ -4,15 +4,16 @@ from . import views
 app_name = "movies"
 
 urlpatterns = [
-    path('homepage/', views.HomePageView, name='home'),
+    path('homepage/', views.HomePageView.as_view(), name='home'),
 
-    path('moviepage/', views.MoviePageView, name='movie'),
-    path('addmoviepage/', views.AddMovieView, name='addmovie'),
-    path('movieDetailpage/', views.MovieDetailView, name='movieDetail'),
+    path('moviepage/', views.MoviePageView.as_view(), name='movie'),
+    path('addmoviepage/', views.AddMovieView.as_view(), name='addmovie'),
+    path('movie/manage_cast_languages/<int:movie_id>/', views.ManageCastLanguagesView.as_view(), name='manage-cast-languages'),
+    path('movieDetailpage/', views.MovieDetailView.as_view(), name='movieDetail'),
     
-    path('genrepage/', views.GenrePageView, name='genre'),
-    path('addgenrepage/', views.AddGenreView, name='addgenre'),
+    path('genrepage/', views.GenrePageView.as_view(), name='genre'),
+    path('addgenrepage/', views.AddGenreView.as_view(), name='addgenre'),
     
-    path('peoplepage/', views.PeoplePageView, name='people'),
-    path('addpeoplepage/', views.AddPeopleView, name='addpeople'),
+    path('peoplepage/', views.PeoplePageView.as_view(), name='people'),
+    path('addpeoplepage/', views.AddPeopleView.as_view(), name='addpeople'),
 ]
