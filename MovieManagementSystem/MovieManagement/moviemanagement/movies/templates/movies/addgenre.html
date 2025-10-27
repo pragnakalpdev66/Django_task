@@ -9,11 +9,11 @@
         <form action="{% url 'movies:addgenre' %}" method="post">
             {% csrf_token %}
             <div><label for="genre-name">Genre Name</label>
-                <input type="text" name="genre_name" id="genre-name"placeholder="e.g. Action, Comedy, Drama"/>
+                <input type="text" name="genre_name" id="genre-name" placeholder="e.g. Action, Comedy, Drama"/>
             </div>
             <div class="btn">
                 <button type="submit">Save Genre</button>
-                <button>Cancel</button>
+                <button><a href="{% url 'movies:genre' %}">Cancel</a></button>
             </div>
         </form>
     </div>
