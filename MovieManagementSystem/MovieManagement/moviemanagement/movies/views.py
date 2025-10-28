@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
-from django.views.generic import TemplateView
-from django.views.decorators.csrf import csrf_protect
-from django.utils.decorators import method_decorator
-from movies.models import Genre, Person, Movie, MovieCast, MovieLanguage
+from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
+from django.views import View # type: ignore
+from django.views.generic import TemplateView, ListView # type: ignore
+from django.views.decorators.csrf import csrf_protect # type: ignore
+from django.utils.decorators import method_decorator # type: ignore
+from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLanguage
 
 # Home
 class HomePageView(TemplateView):
@@ -13,11 +13,19 @@ class HomePageView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['genres'] = Genre.objects.all()
         # filter on genre
+        # context['movies'] = Movie.objects.all()
+        selected_genre = self.request.GET.get('genre')
+        if selected_genre:
+            context['movies'] = Movie.objects.filter(genre__name=selected_genre)
+        else:
+            context['movies'] = Movie.objects.all()
         return context
 
 # Movie
-class MoviePageView(TemplateView):
+class MoviePageView(ListView):
+    model = Movie
     template_name = 'movies/movie.html'
+    context_object_name = 'movies'
 
 @method_decorator(csrf_protect, name='dispatch')
 class AddMovieView(View):
@@ -84,16 +92,42 @@ class AddMovieView(View):
 class MovieDetailView(TemplateView):
     template_name = 'movies/movieDetail.html'
 
-#People
-class PeoplePageView(TemplateView):
+    def get(self, request, movie_id, *args, **kwargs):
+        movie = get_object_or_404(Movie, id=movie_id)
+        cast = MovieCast.objects.filter(movie_name=movie)
+        languages = MovieLanguage.objects.filter(movie_name=movie)
+        reviews = movie.reviews.all()  # uses related_name in Review model
+        context = {
+            'movie': movie,
+            'cast': cast,
+            'languages': languages,
+            'reviews': reviews,
+        }
+        return render(request, self.template_name, context)
+
+#People #peoplepageview
+class PersonListView(ListView):
+    model = Person
     template_name = 'movies/people.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # context2 = {'role_choices': Person.Role.choices}
-        context['people'] = Person.objects.all() # & Person.Role.choices # have to add query
-        return context
+    def get_queryset(self):
+        queryset = super().get_queryset()
 
+        role_type = self.request.GET.get('role_type')
+        search_query = self.request.GET.get('search_person')
+
+        if role_type:
+            queryset = queryset.filter(role_type=role_type)
+        if search_query:
+            queryset = queryset.filter(person_name__icontains=search_query)
+        
+        return queryset#.order_by('person_name')
+
+    # def get_context_data(self, **kwargs):
+    #     # context = super().get_context_data(**kwargs)
+    #     context = {'role_choices': Person.Role.choices}
+    #     context['people'] = Person.objects.all() # & Person.Role.choices # have to add query
+    #     return context
     
 class PersonDetailView(TemplateView):
     template_name = 'movies/personDetail.html'
@@ -155,7 +189,7 @@ class ManageCastLanguagesView(View):
     def get(self, request, movie_id, *args, **kwargs):
         movie = get_object_or_404(Movie, id=movie_id)
         actors = Person.objects.filter(role_type=Person.Role.ACTOR)
-        languages = MovieLanguage.objects.all()
+        languages = ['English', 'Spanish', 'French', 'Filipino'] # Language.objects.all() # MovieLanguage.objects.all()
         cast_list = MovieCast.objects.filter(movie_name=movie)
         movie_languages = MovieLanguage.objects.filter(movie_name=movie)
 
@@ -173,19 +207,31 @@ class ManageCastLanguagesView(View):
         print("ManageCastLanguagesView POST triggered")
 
         if 'add_cast' in request.POST:
-            actor_id = request.POST.get('actor')
+            actor_id = request.POST.get('actor_id')
             character_name = request.POST.get('character_name')
             if actor_id and character_name:
                 actor = Person.objects.filter(id=actor_id, role_type=Person.Role.ACTOR).first()
                 if actor:
-                    MovieCast.objects.create(movie_name=movie, actor=actor, character_name=character_name)
+                    MovieCast.objects.create(movie_name=movie, person=actor, character_name=character_name)
+
 
         elif 'add_language' in request.POST:
-            lang_code = request.POST.get('language')
-            if lang_code:
-                MovieLanguage.objects.create(movie_name=movie, language=lang_code)
+            lang_value = request.POST.get('language')
+            if lang_value:
+                lang_obj = None
+                try:
+                    if str(lang_value).isdigit():
+                        lang_obj = Language.objects.filter(id=int(lang_value)).first()
+                except Exception:
+                    lang_obj = None
+
+                if not lang_obj:
+                    lang_obj, _ = Language.objects.get_or_create(language=lang_value)
+
+                if lang_obj:                   
+                    MovieLanguage.objects.create(movie_name=movie, language=lang_obj)
 
         elif 'done' in request.POST:
-            return redirect('movies:moviedetail')
+            return redirect('movies:moviedetail',movie_id=movie.id)
 
         return redirect('movies:manage_cast_language', movie_id=movie.id)

@@ -49,6 +49,7 @@ class MovieCast(models.Model):
 
 class Language(models.Model):
     language = models.CharField(max_length=50, unique=True)
+    # languages = ['English', 'Spanish', 'French', 'Filipino']
 
 class MovieLanguage(models.Model):
     movie_name = models.ForeignKey(Movie, on_delete=models.CASCADE)

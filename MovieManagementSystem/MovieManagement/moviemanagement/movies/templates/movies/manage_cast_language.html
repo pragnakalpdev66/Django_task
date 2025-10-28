@@ -4,12 +4,12 @@
 
 {% block content %}
 <div class="movie-title">
-    <h2>Manage Cast and Languages for {{ movie.title }}</h2>
+    <h2>Manage Cast and Languages for <i>{{ movie.title }}</i></h2>
 </div>
 
 <div class="cast-container">
     <div class="cast-form">
-        <form method="POST">
+        <form method="post">
             {% csrf_token %}
             <h3>Movie Cast</h3>
             <div>
@@ -17,7 +17,7 @@
                 <select name="actor">
                     <option value="">Choose an Actor...</option>
                     {% for actor in actors %}
-                        <option value="{{ actor.id }}">{{ actor.name }}</option>
+                        <option value="{{ actor.id }}">{{ actor.person_name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -35,7 +35,7 @@
         <h4>Existing Cast:</h4>
         <ul>
         {% for c in cast_list %}
-            <li>{{ c.person.name }} as {{ c.character_name }}</li>
+            <li>{{ person.person_name }} as {{ c.character_name }} <button>remove</button></li>
         {% empty %}
             <li>No cast added yet.</li>
         {% endfor %}
@@ -47,15 +47,15 @@
 
 <div class="lang-container">
     <div class="lang-form">
-        <form method="POST">
+        <form method="post">
             {% csrf_token %}
             <h3>Movie Language</h3>
             <div>
                 <label>Select Language</label>
-                <select name="language">
+                <select name="languages">
                     <option value="">Choose a Language...</option>
                     {% for lang in languages %}
-                        <option value="{{ lang.id }}">{{ lang.name }}</option>
+                        <option value="{{ lang.id }}">{{ lang.language }}</option>
                     {% endfor %}
                 </select>
             </div>  
@@ -65,11 +65,11 @@
         </form>
     </div>
 
-    <div class="lang-list">
+    <div class="movie-languages">
         <h4>Existing Languages:</h4>
         <ul>
-        {% for lang in language_list %}
-            <li>{{ lang.language.name }}</li>
+        {% for lang in movie_languages %}
+            <li>{{ lang.language }}</li>
         {% empty %}
             <li>No languages added yet.</li>
         {% endfor %}
@@ -77,14 +77,12 @@
     </div>
 </div>
 
-<div class="bottom-btns">
-    <form method="POST">
-        {% csrf_token %}
-        <div class="btn-9">
-            <div><button><a href="{% url 'movies:movie' %}">Back to Movie</a></button></div>
-            <div><button type="submit" name="done">Done</button></div>
-        </div>
-    </form>
-</div>
+<form action="{% url 'movies:manage_cast_language' movie_id=movie.id %}" method="post">
+    {% csrf_token %}
+    <div class="bottom-btns">
+        <button><a href="{% url 'movies:movie' %}">Back to Movie</a></button>
+        <button type="submit" name="done">Done</button>
+    </div>
+</form>
 
 {% endblock %}

@@ -9,23 +9,41 @@
         <button><a class="nav-link" href="{% url 'movies:addpeople' %}">+ Add New Person</a></button>
     </div>
 
-    <div class="role-type">
-        <label for="role_type">Role Type</label>
-        <select id="role_type" name="role_type">
-            {% for value, label in people. %}
-                <option value="{{ value }}">{{ label }}</option>
-            {% endfor %}
+    <form class="search-person" method="get" action="{% url 'movies:people' %}" role="search">
+        <div class="role-type">
+            <label for="role_type">Role Type</label>
+            {% comment %} <select id="role_type" name="role_type">
+                {% for value, label in person.role_type.choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select> {% endcomment %}
+            <select class="form-select" name="role_type">
+            <option value="">All Roles</option>
+            <option value="actor">Actor</option>
+            <option value="director">Director</option>
+            <option value="writer">Writer</option>
         </select>
-    </div>
+        </div>
+        <div class="search-input">
+            <label for="search_person">Search</label>
+            <input type="search" name="search_person" value="{{ request.GET.search_person|default:'' }}" placeholder="Search by name..."/>
+        </div>
+        <div class="btn-6">
+            <button type="submit">Apply Filters</button>
+        </div>
+    </form>
+
 
     <div class="people-section">
-        {% if people %}
+        {% comment %} {% if people %} {% endcomment %}
         <ul>
             {% for person in people %}
             <li>
-                {{ person.person_name }}
-                {% if person.role_type %}{{ person.role_type }}{% endif %}
-                {% if person.birth_date %} Born: {{ person.birth_date }}{% endif %}
+                {{ person.person_name }} 
+                {{ person.role_type }} 
+                {% comment %} {% if person.role_type %}{% endif %} {% endcomment %}
+                Born: {{ person.birth_date }}
+                {% comment %} {% if person.birth_date %} {% endif %} {% endcomment %}
                 total count of movies acted/directed
                 <button><a href="{% url 'movies:personDetail' %}">View</a></button>
                 <button><a href="{% url 'movies:addpeople' %}">Edit</a></button>
@@ -35,7 +53,7 @@
             <p>No person found.</p>
             {% endfor %}
         </ul>
-        {% endif %}
+        {% comment %} {% endif %} {% endcomment %}
     </div>
 </div>
 {% endblock content %}
