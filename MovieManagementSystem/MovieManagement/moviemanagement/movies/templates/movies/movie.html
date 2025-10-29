@@ -8,37 +8,95 @@
         <h1>All Movies</h1>
         <button><a class="nav-link" href="{% url 'movies:addmovie' %}">Add New Movie</a></button>
     </div>
-    
+    <br>
     <div class="filter-container">
-        {% comment %} filter section {% endcomment %}
+        <form class="filter-movie" method="get" action="{% url 'movies:movie' %}" role="search">
+            <div>
+                <label for="genres_list">
+                    <select name="genre">
+                        <option value="all">All Genres</option>
+                        {% for genre in genres_list%}
+                            <option value="{{ genre.id }}">{{ genre.genre_name }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <div>
+                <label for="years_list">
+                    <select name="year">
+                        <option value="all">All Years</option>
+                        {% for year in years_list%}
+                            <option value="{{ year.id }}">{{ movie.release_year }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <div class="search-input">
+                <label for="search_movie">Search</label>
+                <input type="search" name="search_movie" value="{{ request.GET.search_movie|default:'' }}" placeholder="Search by title..."/>
+            </div>
+            <div class="btn-apply-filter">
+                <button type="submit">Apply Filters</button>
+            </div>
+        </form>
     </div>
     <hr>
     
     <div class="movies-section">
         <table>
-        movies
+            movies
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Director</th>
+                    <th>Year</th>
+                    <th>Duration</th>
+                    <th>Rating</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>{{ movie.title }}</td>
+                    <td>{{ movie.genre.genre_name }}</td>
+                    <td>{{ movie.director.person_name }}</td>
+                    <td>{{ movie.release_year }}</td>
+                    <td>{{ movie.duration }} min</td>
+                    <td>*</td>
+                    <td>
+                        <button><a href="{% url 'movies:movieDetail' movie.id %}">View</a></button>
+                        {% comment %} <button><a href="{% url 'movies:addmovie' movie.id %}">Edit</a></button> {% endcomment %}
+                        <button>Delete</button>
+                    </td>
+                    {% empty %}
+                    <p>No Movie found.</p>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
 
-        <div class="movies-section">
-        {% if movies %}
-        <ul>
-            {% for movie in movies %}
-            <li>
-                {{ movie.title }}
-                {% if movie.release_year %} {{ movie.release_year }}{% endif %} 
-                {% if movie.genre %} | {{ movie.genre.genre_name }}{% endif %} 
-                {% if movie.director %} | Directed by {{ movie.director.person_name }}{% endif %}
-                <a href="{% url 'movies:manage_cast_language' movie_id=movie.id %}">Manage cast/lang</a>
-            </li>
-            {% empty %}
-            <p>No Movie found.</p>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        </div>
+        {% comment %} <div class="movies-section">
+            {% if movies %}
+            <ul>
+                {% for movie in movies %}
+                <li>
+                    {{ movie.title }}
+                    {% if movie.release_year %} {{ movie.release_year }}{% endif %} 
+                    {% if movie.genre %} | {{ movie.genre.genre_name }}{% endif %} 
+                    {% if movie.director %} | Directed by {{ movie.director.person_name }}{% endif %}
+                    <a href="{% url 'movies:manage_cast_language' movie_id=movie.id %}">Manage cast/lang</a>
+                </li>
+                {% empty %}
+                <p>No Movie found.</p>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div> {% endcomment %}
 
         <button>
-        <a class="nav-link" href="{% url 'movies:movieDetail' %}">View</a>
+            {% comment %} <a class="nav-link" href="{% url 'movies:movieDetail' %}">View</a> {% endcomment %}
         </button>
     </div>
 </div>
