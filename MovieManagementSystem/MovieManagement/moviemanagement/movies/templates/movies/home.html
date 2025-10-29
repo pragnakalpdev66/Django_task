@@ -47,10 +47,12 @@
                         <div class="movie-poster">img</div>
                         <div class="movie-info">
                             <h3>{{ movie.title }}</h3>
-                            <p>{{ movie.release_year }} * {{ movie.genre.name }} * {{ movie.duration }}</p>
-                            <span>{{ movie.rating }}</span>
+                            <p>{{ movie.release_year }} * {{ movie.genre }} * {{ movie.duration }} min</p>
+                            {% comment %} <span>{{ movie.rating }}</span> {% endcomment %}
                         </div>
                     </a>
+                    <br>
+                    <hr>
                 </div>
             {% empty %}
                 <p>No movies found.</p>

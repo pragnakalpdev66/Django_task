@@ -109,18 +109,31 @@ class MovieDetailView(TemplateView):
 class PersonListView(ListView):
     model = Person
     template_name = 'movies/people.html'
+    context_object_name = 'people'
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        print(f"Initial queryset count: {queryset.count()}") ##
 
         role_type = self.request.GET.get('role_type')
         search_query = self.request.GET.get('search_person')
 
-        if role_type:
+        print(f"role_type: {role_type}") ## 
+        print(f"search_query: {search_query}") ##
+
+        if role_type and role_type != "all":
             queryset = queryset.filter(role_type=role_type)
+            print(f"Filtered by role_type. New count: {queryset.count()}") ##
+        # else:
+        #     queryset = Person.objects.all()
+        #     print(f"Display all role type. count: {queryset.count()}") #3
+
         if search_query:
             queryset = queryset.filter(person_name__icontains=search_query)
-        
+            print(f"Filtered by search_query. New count: {queryset.count()}") ##
+
+        print(f"Final queryset count: {queryset.count()}") ##
+
         return queryset#.order_by('person_name')
 
     # def get_context_data(self, **kwargs):
