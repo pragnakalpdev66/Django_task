@@ -3,8 +3,59 @@
 {% block title %}3.Movie Detail Page{% endblock %}
 
 {% block content %}
+<h1>Movie Detail Page</h1>
 <div class="movie-container">
-    <div></div>
-    <h1>Movie Detail Page</h1>
+    <div class="movie-info">
+        <div>img</div>
+        <div>
+            <h1>{{ movie.title }}</h1>
+            <p>main liner</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Genre</th>
+                        <th>Release Year</th>
+                        <th>Duration</th>
+                        <th>Director</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ movie.genre.genre_name }}</td>
+                        <td>{{ movie.release_year }}</td>
+                        <td>{{ movie.duration }} min</td>
+                        <td>{{ movie.director.person_name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2><span>rating</span></h2>
+            {% comment %} <button><a href="{% url 'movies:addmovie' movie_id=movie.id %}">Edit Movie</a></button> {% endcomment %}
+            <button>Edit Movie</button>
+            <button>Delete Movie</button>
+            <button><a href="{% url 'movies:movie' %}">Back to List</a></button>
+        </div>
+        <div class="movie-description">
+            <h2>Overview</h2>
+            <hr>
+            <p>{{ movie.description }}</p>
+        </div>
+        <div class="movie-language">
+            <h2>Language</h2>
+            <hr>
+            <p>{{ movie.lanueage }}</p>
+        </div>
+        <div class="movie-cast">
+            <h2>Cast</h2>
+            <hr>
+            <p>{{ person.person_name }}</p>
+        </div>
+    </div>
+
+    <div class="review-container">
+        <h2>User Reviews</h2>
+        <hr>
+        <button>+ Add Your Review</button>
+
+    </div>
 </div>
 {% endblock content %}

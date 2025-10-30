@@ -27,6 +27,36 @@ class MoviePageView(ListView):
     template_name = 'movies/movie.html'
     context_object_name = 'movies'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['genres'] = Genre.objects.all()
+        context['years'] = Movie.release_year
+
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        print("movie list printing..")
+
+        genres_list = self.request.GET.getlist('genres')
+        print(f"genre: {genres_list}") ## 
+        years_list = self.request.GET.get('years_list')
+        search_query = self.request.GET.get('search_movie')
+        print(f"search_query: {search_query}") ## 
+
+        if genres_list and 'all' not in genres_list:
+            print("filter with genre block..")
+            queryset = queryset.filter(genre__in=genres_list)
+        if years_list and years_list != "all":
+            print("filter with year block..")
+            queryset = queryset.filter(years_list=years_list)
+        if search_query:
+            print("filter with search-query block..")
+            queryset = queryset.filter(title__icontains=search_query)
+        
+        return queryset
+        
+
 @method_decorator(csrf_protect, name='dispatch')
 class AddMovieView(View):
     template_name = 'movies/addmovie.html'
@@ -145,8 +175,11 @@ class PersonListView(ListView):
 class PersonDetailView(TemplateView):
     template_name = 'movies/personDetail.html'
     
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+    def get(self, request, person_id, *args, **kwargs):
+        person = get_object_or_404(Person, id=person_id)
+
+        context = {'person':person}
+        return render(request, self.template_name,context)
 
 @method_decorator(csrf_protect, name='dispatch')
 class AddPeopleView(View):
@@ -160,10 +193,11 @@ class AddPeopleView(View):
         print("Entering AddPeopleView POST block")
         person_name = request.POST.get('person_name')
         role_type = request.POST.get('role_type')
+        birth_date = request.POST.get('birth_date')
         bio = request.POST.get('biography') or request.POST.get('bio')
 
         if person_name and role_type:
-            Person.objects.create(person_name=person_name, role_type=role_type, bio=bio)
+            Person.objects.create(person_name=person_name, role_type=role_type, birth_date=birth_date, bio=bio)
             return redirect('movies:people')
 
         context = {'role_choices': Person.Role.choices}

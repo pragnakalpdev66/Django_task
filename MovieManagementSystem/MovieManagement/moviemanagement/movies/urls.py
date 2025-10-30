@@ -16,5 +16,5 @@ urlpatterns = [
     
     path('peoplepage/', views.PersonListView.as_view(), name='people'),
     path('addpeoplepage/', views.AddPeopleView.as_view(), name='addpeople'),
-    path('personDetailpage/<int:pk>/', views.PersonDetailView.as_view(), name='personDetail'),
+    path('personDetailpage/<int:person_id>/', views.PersonDetailView.as_view(), name='personDetail'),
 ]
