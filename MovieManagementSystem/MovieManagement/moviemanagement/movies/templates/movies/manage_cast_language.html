@@ -12,7 +12,9 @@
         <form method="post">
             {% csrf_token %}
             <h3>Movie Cast</h3>
-            <div>
+            <hr>
+            <div class="add-cast-sontainer">
+                <h4>Add Cast Member</h4>
                 <label>Select Actor</label>
                 <select name="actor">
                     <option value="">Choose an Actor...</option>
@@ -32,10 +34,10 @@
     </div>
 
     <div class="cast-list">
-        <h4>Existing Cast:</h4>
+        {% comment %} <h4>Existing Cast:</h4> {% endcomment %}
         <ul>
         {% for c in cast_list %}
-            <li>{{ person.person_name }} as {{ c.character_name }} <button>remove</button></li>
+            <li>{{ c.actor.person_name }} as {{ c.character_name }} <button>remove</button></li>
         {% empty %}
             <li>No cast added yet.</li>
         {% endfor %}
@@ -49,13 +51,15 @@
     <div class="lang-form">
         <form method="post">
             {% csrf_token %}
-            <h3>Movie Language</h3>
-            <div>
+            <h3>Movie Languages</h3>
+            <hr>
+            <div class="add-lang-container">
+                <h4>Add Language</h4>
                 <label>Select Language</label>
-                <select name="languages">
+                <select name="language">
                     <option value="">Choose a Language...</option>
                     {% for lang in languages %}
-                        <option value="{{ lang.id }}">{{ lang.language }}</option>
+                        <option value="{{ lang }}">{{ lang }}</option>
                     {% endfor %}
                 </select>
             </div>  
@@ -66,10 +70,10 @@
     </div>
 
     <div class="movie-languages">
-        <h4>Existing Languages:</h4>
+        {% comment %} <h4>Existing Languages:</h4> {% endcomment %}
         <ul>
         {% for lang in movie_languages %}
-            <li>{{ lang.language }}</li>
+            <li>{{ lang.language }} <button>remove</button></li>
         {% empty %}
             <li>No languages added yet.</li>
         {% endfor %}

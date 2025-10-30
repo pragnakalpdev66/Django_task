@@ -49,7 +49,7 @@
             </a>
             <div class="action-btn">
                 <button><a href="{% url 'movies:personDetail' person.id %}">View</a></button>
-                {% comment %} <button><a href="{% url 'movies:addpeople' person.id %}">Edit</a></button> {% endcomment %}
+                <button><a href="{% url 'movies:editpeople' person.id %}">Edit</a></button>
                 <button>Delete</button>
             </div>
             <hr>

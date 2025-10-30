@@ -7,28 +7,34 @@
     <div></div>
     <h1>add People Page</h1>
     <div>
+        {% if person %}
+        <form action="{% url 'movies:editpeople' person_id=person.id %}" method="post">
+        {% else %}
         <form action="{% url 'movies:addpeople' %}" method="post">
+        {% endif %}
             {% csrf_token %}
             <div><label for="person-name">Genre Name</label>
-                <input type="text" name="person_name" id="person-name"placeholder="Enter full name"/>
+                <input type="text" name="person_name" id="person-name"placeholder="Enter full name" value="{% if person %}{{ person.person_name }}{% endif %}">
             </div>
             <div class="role-type">
                 <label for="role_type">Role:</label>
                 <select id="role_type" name="role_type" required>
                     {% for value, label in role_choices %}
-                        <option value="{{ value }}">{{ label }}</option>
+                        <option value="{{ value }}" {% if person and person.value == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
                     {% endfor %}
                 </select>
             </div>
 
             <div class="birth-date">
-            <label for="birth_date">Birthdate:</label>
-            <input type="date" name="birth_date" id="birth_date" placeholder="17/Oct/2000">
+                <label for="birth_date">Birthdate:</label>
+                <input type="date" name="birth_date" id="birth_date" value="{% if person %}{{ person.birth_date|date:'Y-m-d' }}{% endif %}">
             </div>
 
-            <div class="biography">
-                <label for="biography">Genre Name</label>
-                <input type="text" name="biography" id="biography"placeholder="Enter biography..."/>
+            <div class="bio">
+                <label for="bio">Genre Name</label>
+                <textarea name="bio" id="bio" rows="3" placeholder="Enter biography...">{% if person %}{{ person.bio }}{% endif %}</textarea>
             </div>
 
             <div class="profile-photo">
@@ -37,7 +43,7 @@
             </div>
 
             <div class="btn">
-                <button type="submit">Save Person</button>
+                <button type="submit">{% if person %}Save Changes{% else %}Save Person{% endif %}</button>
             <button><a href="{% url 'movies:people' %}">Cancel</a></button>
             </div>
         </form>

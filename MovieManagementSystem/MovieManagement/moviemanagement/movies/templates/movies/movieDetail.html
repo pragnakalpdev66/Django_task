@@ -29,8 +29,7 @@
                 </tbody>
             </table>
             <h2><span>rating</span></h2>
-            {% comment %} <button><a href="{% url 'movies:addmovie' movie_id=movie.id %}">Edit Movie</a></button> {% endcomment %}
-            <button>Edit Movie</button>
+            <button><a href="{% url 'movies:editmovie' movie.id %}">Edit Movie</a></button>
             <button>Delete Movie</button>
             <button><a href="{% url 'movies:movie' %}">Back to List</a></button>
         </div>
@@ -42,12 +41,32 @@
         <div class="movie-language">
             <h2>Language</h2>
             <hr>
-            <p>{{ movie.lanueage }}</p>
+            <div>
+            {% if languages %}
+                {% for movie_lang in languages %}
+                    <div>
+                        {{ movie_lang.language.language }} 
+                    </div>
+                {% endfor %}
+                {% else %}
+                <p>No languages have been added yet.</p>
+            {% endif %}
+            </div>
         </div>
         <div class="movie-cast">
             <h2>Cast</h2>
             <hr>
-            <p>{{ person.person_name }}</p>
+            {% if cast %}
+                <div>
+                {% for cast_member in cast %}
+                    <div>
+                        {{ cast_member.person.person_name }} as {{ cast_member.character_name }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p>No cast members have been added yet.</p>
+            {% endif %}
         </div>
     </div>
 

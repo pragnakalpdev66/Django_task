@@ -35,7 +35,7 @@ class Movie(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.title} ({self.release_year or 'N/A'})"
+        return f"{self.title} ({self.release_year})"
 
 
 class MovieCast(models.Model):
@@ -51,9 +51,15 @@ class Language(models.Model):
     language = models.CharField(max_length=50, unique=True)
     # languages = ['English', 'Spanish', 'French', 'Filipino']
 
+    def __str__(self):
+        return self.language
+
 class MovieLanguage(models.Model):
     movie_name = models.ForeignKey(Movie, on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.language}"
 
     class Meta:
         unique_together = (('movie_name', 'language'),)

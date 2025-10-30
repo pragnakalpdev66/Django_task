@@ -65,7 +65,7 @@
                     <td>*</td>
                     <td>
                         <button><a href="{% url 'movies:movieDetail' movie.id %}">View</a></button>
-                        {% comment %} <button><a href="{% url 'movies:addmovie' movie.id %}">Edit</a></button> {% endcomment %}
+                        <button><a href="{% url 'movies:editmovie' movie.id %}">Edit</a></button>
                         <button>Delete</button>
                     </td>
                     {% empty %}
@@ -74,9 +74,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        <button>
-            {% comment %} <a class="nav-link" href="{% url 'movies:movieDetail' %}">View</a> {% endcomment %}
-        </button>
     </div>
 </div>
 {% endblock content %}

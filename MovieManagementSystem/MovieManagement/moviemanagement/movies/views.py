@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.views import View # type: ignore
-from django.views.generic import TemplateView, ListView # type: ignore
+from django.views.generic import TemplateView, ListView, DeleteView # type: ignore
 from django.views.decorators.csrf import csrf_protect # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
 from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLanguage
+from datetime import date
 
 # Home
 class HomePageView(TemplateView):
@@ -58,16 +59,25 @@ class MoviePageView(ListView):
         
 
 @method_decorator(csrf_protect, name='dispatch')
-class AddMovieView(View):
+class AddEditMovieView(View):
     template_name = 'movies/addmovie.html'
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, movie_id=None, *args, **kwargs):
+        movie = None
+        if movie_id:
+            movie = get_object_or_404(Movie, id=movie_id)
+
         genres = Genre.objects.all()
         directors = Person.objects.filter(role_type=Person.Role.DIRECTOR)
-        context = {'genres': genres, 'directors': directors}
+
+        context = {
+            'movie': movie,
+            'genres': genres, 
+            'directors': directors
+        }
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, movie_id=None, *args, **kwargs):
         print("Entering AddMovieView POST block")
 
         title = request.POST.get('title')
@@ -100,7 +110,19 @@ class AddMovieView(View):
                     print("Director lookup error:", e)
 
             try:
-                movie = Movie.objects.create(
+                if movie_id:
+                    movie = get_object_or_404(Movie, id=movie_id)
+                    movie.title = title
+                    movie.description = description or None
+                    movie.release_year = int(release_year) if release_year and release_year.isdigit() else None
+                    movie.duration = int(duration) if duration and duration.isdigit() else None
+                    movie.genre = genre_obj
+                    movie.director = director_obj
+                    movie.save()
+                    print(f"Updated movie: {movie}")
+
+                else:
+                    movie = Movie.objects.create(
                     title=title,
                     description=description or None,
                     release_year=int(release_year) if release_year and release_year.isdigit() else None,
@@ -116,8 +138,20 @@ class AddMovieView(View):
 
         genres = Genre.objects.all()
         directors = Person.objects.filter(role_type=Person.Role.DIRECTOR)
-        context = {'genres': genres, 'directors': directors}
+        context = {
+            'movies': get_object_or_404(Movie, id=movie_id) if movie_id else None,
+            'genres': genres, 
+            'directors': directors
+        }
         return render(request, self.template_name, context)
+
+class DeleteMovie(DeleteView):
+    template_name = 'movies/confirmation.html'
+
+    def post(self, request, movie_id):
+        movie = get_object_or_404(Movie, id=movie_id)
+        movie.delete()
+        return redirect('movies:movie') 
 
 class MovieDetailView(TemplateView):
     template_name = 'movies/movieDetail.html'
@@ -126,12 +160,12 @@ class MovieDetailView(TemplateView):
         movie = get_object_or_404(Movie, id=movie_id)
         cast = MovieCast.objects.filter(movie_name=movie)
         languages = MovieLanguage.objects.filter(movie_name=movie)
-        reviews = movie.reviews.all()  # uses related_name in Review model
+        # reviews = movie.reviews.all()  # uses related_name in Review model
         context = {
             'movie': movie,
             'cast': cast,
             'languages': languages,
-            'reviews': reviews,
+            # 'reviews': reviews,
         }
         return render(request, self.template_name, context)
 
@@ -182,26 +216,53 @@ class PersonDetailView(TemplateView):
         return render(request, self.template_name,context)
 
 @method_decorator(csrf_protect, name='dispatch')
-class AddPeopleView(View):
+class AddEditPeopleView(View):
     template_name = 'movies/addpeople.html'
 
-    def get(self, request, *args, **kwargs):
-        context = {'role_choices': Person.Role.choices}
+    def get(self, request, person_id=None, *args, **kwargs):
+        person = None
+        if person_id:
+            person = get_object_or_404(Person, id=person_id)
+
+        context = {
+            'person': person,
+            'role_choices': Person.Role.choices
+        }
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, person_id=None, *args, **kwargs):
         print("Entering AddPeopleView POST block")
+
         person_name = request.POST.get('person_name')
         role_type = request.POST.get('role_type')
-        birth_date = request.POST.get('birth_date')
-        bio = request.POST.get('biography') or request.POST.get('bio')
+        birth_date_str = request.POST.get('birth_date')
+        bio = request.POST.get('bio')
 
-        if person_name and role_type:
-            Person.objects.create(person_name=person_name, role_type=role_type, birth_date=birth_date, bio=bio)
-            return redirect('movies:people')
+        if person_id:
+            person = get_object_or_404(Person, id=person_id)
+        else:
+            person = Person()
 
-        context = {'role_choices': Person.Role.choices}
-        return render(request, self.template_name, context)
+        if birth_date_str:
+            try:
+                person.birth_date = date.fromisoformat(birth_date_str)
+            except ValueError:
+                person.birth_date = None
+        else:
+            person.birth_date = None
+
+        person.person_name=person_name
+        person.role_type=role_type
+        person.bio=bio
+        person.save()
+        
+        return redirect('movies:people')
+
+        # context = {
+        #     'person': get_object_or_404(Person, id=person_id) if person_id else None,
+        #     'role_choices': Person.Role.choices
+        # }
+        # return render(request, self.template_name, context)
 
 # Genre
 class GenrePageView(TemplateView):
@@ -254,11 +315,13 @@ class ManageCastLanguagesView(View):
         print("ManageCastLanguagesView POST triggered")
 
         if 'add_cast' in request.POST:
-            actor_id = request.POST.get('actor_id')
+            actor_id = request.POST.get('actor')
             character_name = request.POST.get('character_name')
+            print(f"actor:{actor_id}\n character_name:{character_name}")
             if actor_id and character_name:
                 actor = Person.objects.filter(id=actor_id, role_type=Person.Role.ACTOR).first()
                 if actor:
+                    print(f"cast added to list")
                     MovieCast.objects.create(movie_name=movie, person=actor, character_name=character_name)
 
 
@@ -279,6 +342,6 @@ class ManageCastLanguagesView(View):
                     MovieLanguage.objects.create(movie_name=movie, language=lang_obj)
 
         elif 'done' in request.POST:
-            return redirect('movies:moviedetail',movie_id=movie.id)
+            return redirect('movies:movieDetail',movie_id=movie.id)
 
         return redirect('movies:manage_cast_language', movie_id=movie.id)
