@@ -30,7 +30,7 @@
             </table>
             <h2><span>rating</span></h2>
             <button><a href="{% url 'movies:editmovie' movie.id %}">Edit Movie</a></button>
-            <button>Delete Movie</button>
+            <button><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete Movie</a></button>
             <button><a href="{% url 'movies:movie' %}">Back to List</a></button>
         </div>
         <div class="movie-description">

@@ -37,7 +37,7 @@
         {% comment %} <h4>Existing Cast:</h4> {% endcomment %}
         <ul>
         {% for c in cast_list %}
-            <li>{{ c.actor.person_name }} as {{ c.character_name }} <button>remove</button></li>
+            <li>{{ c.person.person_name }} <br>as {{ c.character_name }} <button>remove</button></li>
         {% empty %}
             <li>No cast added yet.</li>
         {% endfor %}
@@ -58,8 +58,8 @@
                 <label>Select Language</label>
                 <select name="language">
                     <option value="">Choose a Language...</option>
-                    {% for lang in languages %}
-                        <option value="{{ lang }}">{{ lang }}</option>
+                    {% for i,lang in languages.items %}
+                        <option value="{{ i }}">{{ lang }}</option>
                     {% endfor %}
                 </select>
             </div>  

@@ -5,9 +5,11 @@ from django.views.decorators.csrf import csrf_protect # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
 from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLanguage
 from datetime import date
+from django.urls import reverse_lazy # type: ignore
 
 # Home
 class HomePageView(TemplateView):
+    model = Movie
     template_name = 'movies/home.html'
 
     def get_context_data(self, **kwargs):
@@ -15,12 +17,23 @@ class HomePageView(TemplateView):
         context['genres'] = Genre.objects.all()
         # filter on genre
         # context['movies'] = Movie.objects.all()
-        selected_genre = self.request.GET.get('genre')
+        selected_genre = self.request.GET.get('genres')
         if selected_genre:
             context['movies'] = Movie.objects.filter(genre__name=selected_genre)
         else:
             context['movies'] = Movie.objects.all()
         return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('search_query')
+
+        if search_query :
+            queryset = queryset.filter(title_icontains=search_query)
+        if search_query:
+            queryset = queryset.filter(person_name__icontains=search_query)
+        
+        return queryset
 
 # Movie
 class MoviePageView(ListView):
@@ -146,12 +159,10 @@ class AddEditMovieView(View):
         return render(request, self.template_name, context)
 
 class DeleteMovie(DeleteView):
+    model = Movie
+    success_url = reverse_lazy("movies:movie")
     template_name = 'movies/confirmation.html'
-
-    def post(self, request, movie_id):
-        movie = get_object_or_404(Movie, id=movie_id)
-        movie.delete()
-        return redirect('movies:movie') 
+    # queryset = Movie.objects.all()
 
 class MovieDetailView(TemplateView):
     template_name = 'movies/movieDetail.html'
@@ -206,6 +217,11 @@ class PersonListView(ListView):
     #     context['people'] = Person.objects.all() # & Person.Role.choices # have to add query
     #     return context
     
+class DeletePeople(DeleteView):
+    model = Person
+    success_url = reverse_lazy("movies:people")
+    template_name = 'movies/confirmation.html'
+
 class PersonDetailView(TemplateView):
     template_name = 'movies/personDetail.html'
     
@@ -297,7 +313,7 @@ class ManageCastLanguagesView(View):
     def get(self, request, movie_id, *args, **kwargs):
         movie = get_object_or_404(Movie, id=movie_id)
         actors = Person.objects.filter(role_type=Person.Role.ACTOR)
-        languages = ['English', 'Spanish', 'French', 'Filipino'] # Language.objects.all() # MovieLanguage.objects.all()
+        languages = {1:'English', 2:'Spanish', 3:'French', 4:'Filipino'} # Language.objects.all() # MovieLanguage.objects.all()
         cast_list = MovieCast.objects.filter(movie_name=movie)
         movie_languages = MovieLanguage.objects.filter(movie_name=movie)
 
@@ -345,3 +361,7 @@ class ManageCastLanguagesView(View):
             return redirect('movies:movieDetail',movie_id=movie.id)
 
         return redirect('movies:manage_cast_language', movie_id=movie.id)
+
+# class RemoveCast(DeleteView):
+#     model = MovieCast
+#     success_url = reverse_lazy("movies:manage_cast_language")

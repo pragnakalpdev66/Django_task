@@ -52,7 +52,7 @@
             <select name="director" id="director">
                 <option value="">Select Director</option>
                 {% for director in directors %}
-                    <option value="{{ d.id }}" {% if movie and movie.director.id == director.id %}selected{% endif %}>
+                    <option value="{{ director.id }}" {% if movie and movie.director.id == director.id %}selected{% endif %}>
                         {{ director.person_name }}
                     </option>
                     {% empty %}

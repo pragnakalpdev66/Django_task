@@ -50,7 +50,7 @@
             <div class="action-btn">
                 <button><a href="{% url 'movies:personDetail' person.id %}">View</a></button>
                 <button><a href="{% url 'movies:editpeople' person.id %}">Edit</a></button>
-                <button>Delete</button>
+                <button><a href="{% url 'movies:deletepeople' pk=person.id %}">Delete</a></button>
             </div>
             <hr>
         </div>
@@ -60,3 +60,7 @@
     </div>
 </div>
 {% endblock content %}
+<form class="search-box" method="get" role="search" action="{% if movie %}{% url 'movies:movie' %}{% elif person %}{% url 'movies:people' %}{% endif %}" >
+            <input class="search-input" name="search_movie" type="search" value="{% if movie %}{{ request.GET.search_movie }}{% elif person %}{{ request.GET.search_person }}{% endif %}" placeholder="Search for movies, actors, directors..."/ required>
+            <button class="btn" type="submit">Search</button>
+        </form>

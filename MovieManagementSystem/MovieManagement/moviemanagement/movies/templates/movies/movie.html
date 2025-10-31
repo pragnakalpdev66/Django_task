@@ -29,7 +29,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="search-input">
+            <div class="search-box">
                 <label for="search_movie">Search</label>
                 <input type="search" name="search_movie" value="{{ request.GET.search_movie|default:'' }}" placeholder="Search by title..."/>
             </div>
@@ -66,7 +66,7 @@
                     <td>
                         <button><a href="{% url 'movies:movieDetail' movie.id %}">View</a></button>
                         <button><a href="{% url 'movies:editmovie' movie.id %}">Edit</a></button>
-                        <button>Delete</button>
+                        <button><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete</a></button>
                     </td>
                     {% empty %}
                     <p>No Movie found.</p>
