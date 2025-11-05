@@ -10,7 +10,23 @@
     </div>
     <div>
         {% for genre in genres %}
-        <p>{{ genre.genre_name }}</p>
+        <div>
+            <h3>{{ genre.genre_name }}</h3>
+            <p>{{ genre.movies.count }} movies</p>
+            <hr>
+            <div class="genre-btn">
+                <form action="{% url 'movies:movie' %}" method="get">
+                    <div name='genres'>
+                        <input type="hidden" name="genres" value="{{ genre.genre_name }}">
+                        <button type="submit">View Movies</button>
+                    </div>
+                </form>
+                {% comment %} <button><a href="{% url 'movies:editmovie' movie.id %}">Edit</a></button> {% endcomment %}
+                <button>Edit</button>
+                {% comment %} <button><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete</a></button> {% endcomment %}
+                <button><a href="{% url 'movies:deletegenre' pk=genre.id %}">Delete</a></button>
+            <div>
+        </div>
         {% empty %}
         <p>No genres found.</p>
         {% endfor %}

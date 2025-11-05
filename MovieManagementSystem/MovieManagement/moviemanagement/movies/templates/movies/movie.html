@@ -16,7 +16,7 @@
                 <select name="genres" id="genre" class="form-select">
                     <option value="all">All Genres</option>
                     {% for genre in genres %}
-                        <option value="{{ genre.id }}">{{ genre.genre_name }}</option>
+                        <option value="{{ genre.genre_name }}">{{ genre.genre_name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -24,8 +24,8 @@
                 <label for="years_list">Year</label>
                 <select name="year">
                     <option value="all">All Years</option>
-                    {% for year in years_list%}
-                        <option value="{{ year.id }}">{{ release_year }}</option>
+                    {% for year in years %}
+                        <option value="{{ year }}">{{ year }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -38,7 +38,7 @@
             </div>
         </form>
     </div>
-    <hr>
+    <hr>                                        
     
     <div class="movies-section">
         <table>

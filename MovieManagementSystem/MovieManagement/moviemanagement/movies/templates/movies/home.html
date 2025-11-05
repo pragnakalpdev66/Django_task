@@ -26,15 +26,20 @@
         <h2 class="block-title">Browse by Genre</h2><hr>
         <div class="genre-items">
             {% comment %} {% if genres %} {% endcomment %}
-            <ul>
+            {% comment %} <ul> {% endcomment %}
                 {% for genre in genres %}
-                <li>
-                    <div name='genres'><a href="{% url 'movies:movie' %}?genre={{ genre.genre_name }}">{{ genre.genre_name }}</a></div>
-                </li>
+                {% comment %} <li> {% endcomment %}
+                    <form action="{% url 'movies:movie' %}" method="get">
+                        <div name='genres'>
+                            <input type="hidden" name="genres" value="{{ genre.genre_name }}">
+                            <button type="submit">{{ genre.genre_name }}</button>
+                        </div>
+                    </form>
+                {% comment %} </li> {% endcomment %}
                 {% empty %}
                 <p>No genre found.</p>
                 {% endfor %}
-            </ul>
+            {% comment %} </ul> {% endcomment %}
             {% comment %} {% endif %} {% endcomment %}
         </div>
         <br>

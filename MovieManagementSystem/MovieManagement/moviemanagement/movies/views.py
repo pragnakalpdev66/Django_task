@@ -5,7 +5,8 @@ from django.views.decorators.csrf import csrf_protect # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
 from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLanguage
 from datetime import date
-from django.urls import reverse_lazy # type: ignore
+from django.urls import reverse_lazy, reverse # type: ignore
+from django.contrib import messages # type: ignore
 
 # Home
 class HomePageView(TemplateView):
@@ -27,12 +28,13 @@ class HomePageView(TemplateView):
     def get_queryset(self):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('search_query')
-
+        genres_list = self.request.GET.getlist('genres')
         if search_query :
             queryset = queryset.filter(title_icontains=search_query)
-        if search_query:
-            queryset = queryset.filter(person_name__icontains=search_query)
-        
+        # if search_query:
+        #     queryset = queryset.filter(person_name__icontains=search_query)
+        if genres_list :
+            queryset = queryset.filter(genre__in=genres_list)
         return queryset
 
 # Movie
@@ -44,7 +46,7 @@ class MoviePageView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['genres'] = Genre.objects.all()
-        context['years'] = Movie.release_year
+        context['years'] = Movie.objects.values_list('release_year', flat=True).distinct().order_by('-release_year')
 
         return context
 
@@ -54,16 +56,17 @@ class MoviePageView(ListView):
 
         genres_list = self.request.GET.getlist('genres')
         print(f"genre: {genres_list}") ## 
-        years_list = self.request.GET.get('years_list')
+        selected_year = self.request.GET.get('year')
+        print(f"selected_year: {selected_year}") ##
         search_query = self.request.GET.get('search_movie')
         print(f"search_query: {search_query}") ## 
 
-        if genres_list and 'all' not in genres_list:
+        if genres_list and 'all' not in [g.lower() for g in genres_list]:
             print("filter with genre block..")
-            queryset = queryset.filter(genre__in=genres_list)
-        if years_list and years_list != "all":
+            queryset = queryset.filter(genre__genre_name__in=genres_list)
+        if selected_year and selected_year != "all":
             print("filter with year block..")
-            queryset = queryset.filter(years_list=years_list)
+            queryset = queryset.filter(release_year=selected_year)
         if search_query:
             print("filter with search-query block..")
             queryset = queryset.filter(title__icontains=search_query)
@@ -299,13 +302,21 @@ class AddGenreView(View):
     def post(self, request, *args, **kwargs):
         print("Entering AddGenreView POST block")
         genre_name = request.POST.get('genre_name')
-        if genre_name:
-            Genre.objects.create(genre_name=genre_name)
+        try: 
+            if genre_name:
+                Genre.objects.create(genre_name=genre_name)
             return redirect('movies:genre')
+        except Exception as e:
+            messages.error(request, f"{genre_name} already been added!")
         return render(request, self.template_name)
 
+class DeleteGenre(DeleteView):
+    model = Genre
+    success_url = reverse_lazy("movies:genre")
+    template_name = 'movies/confirmation.html'
 
-#cast and lang
+
+# cast and lang
 @method_decorator(csrf_protect, name='dispatch')
 class ManageCastLanguagesView(View):
     template_name = 'movies/manage_cast_language.html'
@@ -328,40 +339,83 @@ class ManageCastLanguagesView(View):
 
     def post(self, request, movie_id, *args, **kwargs):
         movie = get_object_or_404(Movie, id=movie_id)
-        print("ManageCastLanguagesView POST triggered")
 
         if 'add_cast' in request.POST:
             actor_id = request.POST.get('actor')
             character_name = request.POST.get('character_name')
-            print(f"actor:{actor_id}\n character_name:{character_name}")
-            if actor_id and character_name:
-                actor = Person.objects.filter(id=actor_id, role_type=Person.Role.ACTOR).first()
-                if actor:
-                    print(f"cast added to list")
-                    MovieCast.objects.create(movie_name=movie, person=actor, character_name=character_name)
 
+            if not actor_id or not character_name:
+                messages.error(request, "Please select an actor and enter a character name.", extra_tags="cast")
+                return redirect(request.path)
 
-        elif 'add_language' in request.POST:
+            actor = Person.objects.filter(id=actor_id, role_type=Person.Role.ACTOR).first()
+            if not actor:
+                messages.error(request, "Invalid actor selection.", extra_tags="cast")
+                return redirect(request.path)
+
+            if MovieCast.objects.filter(movie_name=movie, person=actor).exists():
+                messages.error(request, f"{actor.person_name} already added to movie!", extra_tags="cast")
+                return redirect(request.path)
+
+            MovieCast.objects.create(movie_name=movie, person=actor, character_name=character_name)
+            return redirect(request.path)
+
+        if 'add_language' in request.POST:
             lang_value = request.POST.get('language')
-            if lang_value:
-                lang_obj = None
-                try:
-                    if str(lang_value).isdigit():
-                        lang_obj = Language.objects.filter(id=int(lang_value)).first()
-                except Exception:
-                    lang_obj = None
+            if not lang_value:
+                messages.error(request, "Please select a language.", extra_tags="lang")
+                return redirect(request.path)
 
-                if not lang_obj:
-                    lang_obj, _ = Language.objects.get_or_create(language=lang_value)
+            lang_obj = None
+            if lang_value.isdigit():
+                lang_obj = Language.objects.filter(id=int(lang_value)).first()
 
-                if lang_obj:                   
-                    MovieLanguage.objects.create(movie_name=movie, language=lang_obj)
+            if not lang_obj:
+                lang_obj, _ = Language.objects.get_or_create(language=lang_value)
 
-        elif 'done' in request.POST:
-            return redirect('movies:movieDetail',movie_id=movie.id)
+            if MovieLanguage.objects.filter(movie_name=movie, language=lang_obj).exists():
+                messages.error(request, f"{lang_obj.language} already added!", extra_tags="lang")
+                return redirect(request.path)
 
-        return redirect('movies:manage_cast_language', movie_id=movie.id)
+            MovieLanguage.objects.create(movie_name=movie, language=lang_obj)
+            return redirect(request.path)
 
-# class RemoveCast(DeleteView):
-#     model = MovieCast
-#     success_url = reverse_lazy("movies:manage_cast_language")
+        if 'done' in request.POST:
+            return redirect('movies:movieDetail', movie_id=movie.id)
+
+        return redirect(request.path)
+    
+
+class RemoveCast(DeleteView):
+    model = MovieCast
+    
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        movie_id = self.object.movie_name.id
+        return reverse("movies:manage_cast_language", kwargs={"movie_id": movie_id})
+
+class RemoveLanguage(DeleteView):
+    model = MovieLanguage
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        movie_id = self.object.movie_name.id
+        return reverse("movies:manage_cast_language", kwargs={"movie_id": movie_id})
+    
+
+# review
+class AddReview(TemplateView):
+    template_name = 'movies/addreview.html'
+
+    def get(self, request, movie_id, *args, **kwargs):
+        movie = get_object_or_404(Movie, id=movie_id)
+
+        context = { 'movie': movie }
+
+        return render(request, self.template_name, context)
+    
+

@@ -13,7 +13,7 @@
         <form action="{% url 'movies:addpeople' %}" method="post">
         {% endif %}
             {% csrf_token %}
-            <div><label for="person-name">Genre Name</label>
+            <div><label for="person-name">Full Name: </label>
                 <input type="text" name="person_name" id="person-name"placeholder="Enter full name" value="{% if person %}{{ person.person_name }}{% endif %}">
             </div>
             <div class="role-type">
@@ -28,18 +28,18 @@
             </div>
 
             <div class="birth-date">
-                <label for="birth_date">Birthdate:</label>
+                <label for="birth_date">Birthdate: </label>
                 <input type="date" name="birth_date" id="birth_date" value="{% if person %}{{ person.birth_date|date:'Y-m-d' }}{% endif %}">
             </div>
 
             <div class="bio">
-                <label for="bio">Genre Name</label>
-                <textarea name="bio" id="bio" rows="3" placeholder="Enter biography...">{% if person %}{{ person.bio }}{% endif %}</textarea>
+                <label for="bio">Biography: </label>
+                <textarea name="bio" id="bio" rows="5" placeholder="Enter biography...">{% if person %}{{ person.bio }}{% endif %}</textarea>
             </div>
 
             <div class="profile-photo">
                 <label for="profile-photo"> Profile Photo</label>
-                <input type="file" name="profile-photo" id="profile-photo" />
+                <input type="file" name="profile_photo" id="profile-photo" />
             </div>
 
             <div class="btn">

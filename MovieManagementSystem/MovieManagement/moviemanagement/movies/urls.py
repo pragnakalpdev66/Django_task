@@ -13,15 +13,18 @@ urlpatterns = [
     path('movieDetailpage/<int:movie_id>/', views.MovieDetailView.as_view(), name='movieDetail'),
 
     path('movie/manage_cast_language/<int:movie_id>/', views.ManageCastLanguagesView.as_view(), name='manage_cast_language'),
-    # path('removecast/<int:pk>/', views.RemoveCast.as_view(), name='removeCast'),
-    # path('removecast/<int:pk>/', views.RemoveCast.as_view(), name='removeCast'),
+    path('removecast/<int:pk>/', views.RemoveCast.as_view(), name='removeCast'),
+    path('removelanguage/<int:pk>/', views.RemoveLanguage.as_view(), name='removeLanguage'),
     
     path('genrepage/', views.GenrePageView.as_view(), name='genre'),
     path('addgenrepage/', views.AddGenreView.as_view(), name='addgenre'),
+    path('deletegenre/<int:pk>/', views.DeleteGenre.as_view(), name='deletegenre'),
     
     path('peoplepage/', views.PersonListView.as_view(), name='people'),
     path('addpeoplepage/', views.AddEditPeopleView.as_view(), name='addpeople'),
     path('editpeoplepage/<int:person_id>/', views.AddEditPeopleView.as_view(), name='editpeople'), ##
     path('deletepeople/<int:pk>/', views.DeletePeople.as_view(), name='deletepeople'),
     path('personDetailpage/<int:person_id>/', views.PersonDetailView.as_view(), name='personDetail'),
+
+    path('addreviewpage/<int:movie_id>/', views.AddReview.as_view(), name='addreview'),
 ]

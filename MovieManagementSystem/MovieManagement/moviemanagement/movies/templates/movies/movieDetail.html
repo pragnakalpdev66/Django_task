@@ -73,8 +73,10 @@
     <div class="review-container">
         <h2>User Reviews</h2>
         <hr>
-        <button>+ Add Your Review</button>
-
+        <button><a href="{% url 'movies:addreview' movie.id %}">+ Add Your Review</a></button>
+        <div>
+            
+        </div>
     </div>
 </div>
 {% endblock content %}
