@@ -3,7 +3,51 @@
 {% block title %}7.Person Detail Page{% endblock title %}
 
 {% block content %}
-<div>
-    <h1>Person Detail Page</h1>
+<h1>Person Detail Page</h1>
+<div class="person-container">
+    <div class="person-info">
+        <div>img</div>
+        <div>
+            <h1>{{ person.person_name }}</h1>
+            <p><span>{{ person.role_type }}</span></p>
+            <p>Born: {{ person.birth_date }}</p>
+            <p>Total Movies: counts </p>
+            <button><a href="{% url 'movies:editpeople' person.id %}">Edit Person</a></button>
+            <button><a href="{% url 'movies:deletepeople' pk=person.id %}">Delete Person</a></button>
+            <button><a href="{% url 'movies:people' %}">Back to List</a></button>
+        </div>
+    </div>
+    <div class="bio">
+        <h2>Biography</h2><hr>
+        <p>{{ person.bio }}</p>
+    </div>
+    <div class="movie-block">
+        <h2>Movies</h2><hr>
+        <h3>Directed</h3>
+        {% for movie in directed_movies %}
+            <div>
+                <a href="{% url 'movies:movieDetail' movie.id %}">
+                     {{ movie.title }} ({{ movie.release_year }})
+                </a>
+            </div>
+        {% empty %}
+            <div>no directing list yet.</div>
+        {% endfor %}
+        
+        <hr>
+
+        <h3>Acted In</h3>
+        {% for cast_item in acted_movie_casts %} 
+            <div>
+                <a href="{% url 'movies:movieDetail' cast_item.movie_name.id %}">
+                    {{ cast_item.movie_name.title }} 
+                </a> 
+                as {{ cast_item.character_name }}
+            </div>
+        {% empty %}
+            <div>no movie acted list yet.</div>
+        {% endfor %}
+    </div>
 </div>
+<br><br><br><br><br>
 {% endblock content %}

@@ -34,14 +34,19 @@ class Movie(models.Model):
     director = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, limit_choices_to={'role_type': 'director'})
     created_at = models.DateTimeField(auto_now_add=True)
 
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name='movies')
+
     def __str__(self):
-        return f"{self.title} ({self.release_year or 'N/A'})"
+        return f"{self.title} ({self.release_year})"
 
 
 class MovieCast(models.Model):
     movie_name = models.ForeignKey(Movie, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, limit_choices_to={'role_type': 'actor'})
     character_name = models.CharField(max_length=100)
+
+    director = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, related_name="directed_movies")
+
 
     class Meta:
         unique_together = (('movie_name', 'person'),)
@@ -51,16 +56,22 @@ class Language(models.Model):
     language = models.CharField(max_length=50, unique=True)
     # languages = ['English', 'Spanish', 'French', 'Filipino']
 
+    def __str__(self):
+        return self.language
+
 class MovieLanguage(models.Model):
     movie_name = models.ForeignKey(Movie, on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.language}"
 
     class Meta:
         unique_together = (('movie_name', 'language'),)
 
 class Review(models.Model):
     movie_name = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
-    user_name = models.ForeignKey(Person, on_delete=models.CASCADE)
+    user_name = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
     rating = models.PositiveIntegerField(
         validators=[
             MinValueValidator(1, message='rating must be at least 1'), 

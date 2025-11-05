@@ -8,8 +8,8 @@
     <div class="head-search-container">
         <h2>Welcome to Movie Management System</h2>
         <p>Browse and manage your movie collection</p>
-        <form class="search-box" method="get" action="{% url 'movies:movie' %}" role="search">
-            <input class="search-input" type="search" placeholder="Search for movies, actors, directors..."/>
+        <form class="search-box" method="get" role="search" action="{% url 'movies:movie' %}">
+            <input class="search-input" name="search_movie" type="search" value="{{ request.GET.search_movie }}" placeholder="Search for movies, actors, directors..."/ required>
             <button class="btn" type="submit">Search</button>
         </form>
         <hr>
@@ -26,15 +26,20 @@
         <h2 class="block-title">Browse by Genre</h2><hr>
         <div class="genre-items">
             {% comment %} {% if genres %} {% endcomment %}
-            <ul>
+            {% comment %} <ul> {% endcomment %}
                 {% for genre in genres %}
-                <li>
-                    <div><a href="{% url 'movies:movie' %}">{{ genre.genre_name }}</a></div>
-                </li>
+                {% comment %} <li> {% endcomment %}
+                    <form action="{% url 'movies:movie' %}" method="get">
+                        <div name='genres'>
+                            <input type="hidden" name="genres" value="{{ genre.genre_name }}">
+                            <button type="submit">{{ genre.genre_name }}</button>
+                        </div>
+                    </form>
+                {% comment %} </li> {% endcomment %}
                 {% empty %}
                 <p>No genre found.</p>
                 {% endfor %}
-            </ul>
+            {% comment %} </ul> {% endcomment %}
             {% comment %} {% endif %} {% endcomment %}
         </div>
         <br>
@@ -48,7 +53,7 @@
                         <div class="movie-info">
                             <h3>{{ movie.title }}</h3>
                             <p>{{ movie.release_year }} * {{ movie.genre }} * {{ movie.duration }} min</p>
-                            {% comment %} <span>{{ movie.rating }}</span> {% endcomment %}
+                            <span>rating ***** </span>
                         </div>
                     </a>
                     <br>

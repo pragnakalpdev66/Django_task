@@ -8,6 +8,7 @@
         <h1>All People</h1>
         <button><a class="nav-link" href="{% url 'movies:addpeople' %}">+ Add New Person</a></button>
     </div>
+    <br>
 
     <form class="search-person" method="get" action="{% url 'movies:people' %}" role="search">
         <div class="role-type">
@@ -32,31 +33,30 @@
             <button type="submit">Apply Filters</button>
         </div>
     </form>
-
+    <hr>
 
     <div class="people-section">
-        {% comment %} {% if people %} {% endcomment %}
         {% for person in people %}
         <div class="person-card">
             <a class="nav-link" href="{% url 'movies:personDetail' person.id %}">
-                <div class="person-profile">img</div>
+                <div class="person-profile">{{ person.profile_photo }}</div>
                 <div class="person-info">
-                    <h3>{{ person.person_name }} </h3>
-                    <p><span>{{ person.role_type }} </span></p>
+                    <h3>{{ person.person_name }}</h3>
+                    <p><span>{{ person.role_type }}</span></p>
                     <p>Born: {{ person.birth_date }}</p>
-                    <p>total count of movies acted/directed</p>
+                    <p>{{ person.moviecast_set.count }} movies acted <br> {{ person.directed_movies.count }} movies directed</p>
                 </div>
             </a>
             <div class="action-btn">
                 <button><a href="{% url 'movies:personDetail' person.id %}">View</a></button>
-                {% comment %} <button><a href="{% url 'movies:addpeople' person.id %}">Edit</a></button> {% endcomment %}
-                <button>Delete</button>
+                <button><a href="{% url 'movies:editpeople' person.id %}">Edit</a></button>
+                <button><a href="{% url 'movies:deletepeople' pk=person.id %}">Delete</a></button>
             </div>
+            <hr>
         </div>
         {% empty %}
         <p>No person found.</p>
         {% endfor %}
-        {% comment %} {% endif %} {% endcomment %}
     </div>
 </div>
 {% endblock content %}

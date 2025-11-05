@@ -12,9 +12,11 @@
         <form method="post">
             {% csrf_token %}
             <h3>Movie Cast</h3>
-            <div>
+            <hr>
+            <div class="add-cast-sontainer">
+                <h4>Add Cast Member</h4>
                 <label>Select Actor</label>
-                <select name="actor">
+                <select name="actor" required>
                     <option value="">Choose an Actor...</option>
                     {% for actor in actors %}
                         <option value="{{ actor.id }}">{{ actor.person_name }}</option>
@@ -23,19 +25,33 @@
             </div>
             <div>
                 <label>Character Name</label>
-                <input type="text" name="character_name" placeholder="Enter character name">
+                <input type="text" name="character_name" placeholder="Enter character name" required>
             </div>
             <div class="btn-add-cast-lang">
             <button type="submit" name="add_cast">+ Add to Cast</button>
             </div>
         </form>
+        {% if messages %}
+            {% for message in messages %}
+                {% if "cast" in message.tags %}
+                    <div class="{{ message.tags }}">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
     </div>
 
     <div class="cast-list">
-        <h4>Existing Cast:</h4>
+        {% comment %} <h4>Existing Cast:</h4> {% endcomment %}
         <ul>
         {% for c in cast_list %}
-            <li>{{ person.person_name }} as {{ c.character_name }} <button>remove</button></li>
+            <li>
+                {{ c.person.person_name }} <br>as {{ c.character_name }}
+                <form action="{% url 'movies:removeCast' c.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Remove</button>
+                </form>
+            </li>
         {% empty %}
             <li>No cast added yet.</li>
         {% endfor %}
@@ -49,13 +65,15 @@
     <div class="lang-form">
         <form method="post">
             {% csrf_token %}
-            <h3>Movie Language</h3>
-            <div>
+            <h3>Movie Languages</h3>
+            <hr>
+            <div class="add-lang-container">
+                <h4>Add Language</h4>
                 <label>Select Language</label>
-                <select name="languages">
+                <select name="language" required>
                     <option value="">Choose a Language...</option>
-                    {% for lang in languages %}
-                        <option value="{{ lang.id }}">{{ lang.language }}</option>
+                    {% for i,lang in languages.items %}
+                        <option value="{{ lang }}">{{ lang }}</option>
                     {% endfor %}
                 </select>
             </div>  
@@ -63,13 +81,27 @@
             <button type="submit" name="add_language">+ Add Language</button>
             </div>
         </form>
+        {% if messages %}
+            {% for message in messages %}
+                {% if "lang" in message.tags %}
+                    <div class="{{ message.tags }}">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
     </div>
 
     <div class="movie-languages">
-        <h4>Existing Languages:</h4>
+        {% comment %} <h4>Existing Languages:</h4> {% endcomment %}
         <ul>
         {% for lang in movie_languages %}
-            <li>{{ lang.language }}</li>
+            <li>
+                {{ lang.language }} 
+                <form action="{% url 'movies:removeLanguage' lang.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Remove</button>
+                </form>
+            </li>
         {% empty %}
             <li>No languages added yet.</li>
         {% endfor %}
@@ -85,4 +117,14 @@
     </div>
 </form>
 
+
 {% endblock %}
+
+
+
+
+
+
+
+
+
