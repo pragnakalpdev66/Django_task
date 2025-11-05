@@ -23,9 +23,30 @@
     </div>
     <div class="movie-block">
         <h2>Movies</h2><hr>
-        {% comment %} {% for movie in acted_movies %} {% endcomment %}
-            <div>acted/directed movies</div>
-        {% comment %} {% endfor %} {% endcomment %}
+        <h3>Directed</h3>
+        {% for movie in directed_movies %}
+            <div>
+                <a href="{% url 'movies:movieDetail' movie.id %}">
+                     {{ movie.title }} ({{ movie.release_year }})
+                </a>
+            </div>
+        {% empty %}
+            <div>no directing list yet.</div>
+        {% endfor %}
+        
+        <hr>
+
+        <h3>Acted In</h3>
+        {% for cast_item in acted_movie_casts %} 
+            <div>
+                <a href="{% url 'movies:movieDetail' cast_item.movie_name.id %}">
+                    {{ cast_item.movie_name.title }} 
+                </a> 
+                as {{ cast_item.character_name }}
+            </div>
+        {% empty %}
+            <div>no movie acted list yet.</div>
+        {% endfor %}
     </div>
 </div>
 <br><br><br><br><br>

@@ -3,7 +3,7 @@ from django.views import View # type: ignore
 from django.views.generic import TemplateView, ListView, DeleteView # type: ignore
 from django.views.decorators.csrf import csrf_protect # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
-from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLanguage
+from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLanguage, Review
 from datetime import date
 from django.urls import reverse_lazy, reverse # type: ignore
 from django.contrib import messages # type: ignore
@@ -106,24 +106,24 @@ class AddEditMovieView(View):
         if title:
             genre_obj = None
             if genre_name:
-                try:
+                # try:
                     if genre_name.isdigit():
                         genre_obj = Genre.objects.filter(id=int(genre_name)).first()
                     else:
                         genre_obj = Genre.objects.filter(genre_name__iexact=genre_name).first()
-                except Exception as e:
-                    print("Genre lookup error:", e)
+                # except Exception as e:
+                #     print("Genre lookup error:", e)
 
             director_obj = None
             if director_id:
-                try:
+                # try:
                     if director_id.isdigit():
                         director_obj = Person.objects.filter(
                             id=int(director_id),
                             role_type=Person.Role.DIRECTOR
                         ).first()
-                except Exception as e:
-                    print("Director lookup error:", e)
+                # except Exception as e:
+                #     print("Director lookup error:", e)
 
             try:
                 if movie_id:
@@ -230,9 +230,15 @@ class PersonDetailView(TemplateView):
     
     def get(self, request, person_id, *args, **kwargs):
         person = get_object_or_404(Person, id=person_id)
+        directed_movies = person.directed_movies.all()
+        acted_movie_casts = MovieCast.objects.filter(person=person).select_related('movie_name')
 
-        context = {'person':person}
-        return render(request, self.template_name,context)
+        context = {
+            'person': person,
+            'directed_movies': directed_movies,
+            'acted_movie_casts': acted_movie_casts,
+        }
+        return render(request, self.template_name, context)
 
 @method_decorator(csrf_protect, name='dispatch')
 class AddEditPeopleView(View):
@@ -418,4 +424,16 @@ class AddReview(TemplateView):
 
         return render(request, self.template_name, context)
     
+    def post(self, request, movie_id, *args, **kwargs):
+        movie = get_object_or_404(Movie, id=movie_id)
 
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+
+        review = Review.objects.create(
+            movie_name=movie,
+            rating=rating,
+            comment=comment,
+        )
+        
+        return redirect('movies:movieDetail', movie_id=movie.id)

@@ -73,10 +73,17 @@
     <div class="review-container">
         <h2>User Reviews</h2>
         <hr>
-        <button><a href="{% url 'movies:addreview' movie.id %}">+ Add Your Review</a></button>
-        <div>
-            
+        <button><a href="{% url 'movies:addreview' movie.id %}">+ Add Your Review</a></button><br><br>
+        {% for review in movie.reviews.all %}
+        <div class="single-review">
+            <div>Rating: {{ review.rating }} / 10
+            <p>{{ review.comment }}</p>
+            <p>{{ review.created_at }}</p></div> 
         </div>
-    </div>
+        <hr>
+        {% empty %}
+            <p>No reviews yet.</p>
+        {% endfor %}
+        </div>
 </div>
 {% endblock content %}
