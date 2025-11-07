@@ -9,56 +9,42 @@
         <h2>Welcome to Movie Management System</h2>
         <p>Browse and manage your movie collection</p>
         <form class="search-box" method="get" role="search" action="{% url 'movies:movie' %}">
-            <input class="search-input" name="search_movie" type="search" value="{{ request.GET.search_movie }}" placeholder="Search for movies, actors, directors..."/ required>
+            <input class="search-input" name="search_movie" type="search" value="{{ request.GET.search_movie }}" placeholder="Search for movies by title..."/ required>
             <button class="btn" type="submit">Search</button>
         </form>
-        <hr>
         <br>
-        {% comment %}
-        <!-- <form method="get" action="{% url 'movie_list' %}">
-            <input type="text" name="q" placeholder="Search movies...">
-            <button type="submit">Search</button>
-        </form> -->
-        {% endcomment %}
     </div>
     <!-- content -->
     <div class="content">
-        <h2 class="block-title">Browse by Genre</h2><hr>
+        <h2 class="block-title">Browse by Genre</h2>
         <div class="genre-items">
-            {% comment %} {% if genres %} {% endcomment %}
-            {% comment %} <ul> {% endcomment %}
-                {% for genre in genres %}
-                {% comment %} <li> {% endcomment %}
-                    <form action="{% url 'movies:movie' %}" method="get">
-                        <div name='genres'>
-                            <input type="hidden" name="genres" value="{{ genre.genre_name }}">
-                            <button type="submit">{{ genre.genre_name }}</button>
-                        </div>
-                    </form>
-                {% comment %} </li> {% endcomment %}
-                {% empty %}
-                <p>No genre found.</p>
-                {% endfor %}
-            {% comment %} </ul> {% endcomment %}
-            {% comment %} {% endif %} {% endcomment %}
+        {% for genre in genres %}
+            <form action="{% url 'movies:movie' %}" method="get">
+                <div name='genres'>
+                    <input type="hidden" name="genres" value="{{ genre.genre_name }}">
+                    <button class="genre-btn" type="submit">{{ genre.genre_name }}</button>
+                </div>
+            </form>
+        {% empty %}
+        <p>No genre found.</p>
+        {% endfor %}
         </div>
         <br>
-        <h2 class="block-title">Popular Movies</h2><hr>
+        <h2 class="block-title">Popular Movies</h2>
         <div class="movie-block">
             {% for movie in movies %}
-                <div class="movie-card">
-                    
-                    <a class="nav-link" href="{% url 'movies:movieDetail' movie.id %}">
-                        <div class="movie-poster">img</div>
+                <a class="nav-link" href="{% url 'movies:movieDetail' movie.id %}">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+                        </div>
                         <div class="movie-info">
                             <h3>{{ movie.title }}</h3>
-                            <p>{{ movie.release_year }} * {{ movie.genre }} * {{ movie.duration }} min</p>
-                            <span>rating ***** </span>
+                            <p>{{ movie.release_year }} • {{ movie.genre }} • {{ movie.duration }} min</p>
+                            <span> {{ review.rating }} rating * </span>
                         </div>
-                    </a>
-                    <br>
-                    <hr>
-                </div>
+                    </div>
+                </a>
             {% empty %}
                 <p>No movies found.</p>
             {% endfor %}

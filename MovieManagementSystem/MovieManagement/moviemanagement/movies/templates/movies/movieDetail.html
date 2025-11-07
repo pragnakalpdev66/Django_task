@@ -1,15 +1,16 @@
 {% extends 'movies/base.html' %}
-
-{% block title %}3.Movie Detail Page{% endblock %}
+{% block title %}3. Movie Detail Page{% endblock %}
 
 {% block content %}
-<h1>Movie Detail Page</h1>
-<div class="movie-container">
-    <div class="movie-info">
-        <div>img</div>
-        <div>
+<div class="add-movie-container">
+    
+    <!-- Movie Header Section -->
+    <div class="movie-detail">
+        <div class="movie-poste">img</div>
+        <div class="movie-main">
             <h1>{{ movie.title }}</h1>
-            <p>main liner</p>
+            <p>{{ movie.tagline|default:"" }}</p>
+
             <table>
                 <thead>
                     <tr>
@@ -28,62 +29,70 @@
                     </tr>
                 </tbody>
             </table>
-            <h2><span>rating</span></h2>
-            <button><a href="{% url 'movies:editmovie' movie.id %}">Edit Movie</a></button>
-            <button><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete Movie</a></button>
-            <button><a href="{% url 'movies:movie' %}">Back to List</a></button>
-        </div>
-        <div class="movie-description">
-            <h2>Overview</h2>
-            <hr>
-            <p>{{ movie.description }}</p>
-        </div>
-        <div class="movie-language">
-            <h2>Language</h2>
-            <hr>
-            <div>
-            {% if languages %}
-                {% for movie_lang in languages %}
-                    <div>
-                        {{ movie_lang.language.language }} 
-                    </div>
-                {% endfor %}
-                {% else %}
-                <p>No languages have been added yet.</p>
-            {% endif %}
+
+            <h2><span>⭐ {{ movie.average_rating|default:"No Rating" }}</span></h2><br>
+
+            <div class="movie-actions">
+                <button><a href="{% url 'movies:editmovie' movie.id %}">Edit Movie</a></button>
+                <button><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete Movie</a></button>
+                <button><a href="{% url 'movies:movie' %}">Back to List</a></button>
             </div>
-        </div>
-        <div class="movie-cast">
-            <h2>Cast</h2>
-            <hr>
-            {% if cast %}
-                <div>
-                {% for cast_member in cast %}
-                    <div>
-                        {{ cast_member.person.person_name }} as {{ cast_member.character_name }}
-                    </div>
-                {% endfor %}
-                </div>
-            {% else %}
-                <p>No cast members have been added yet.</p>
-            {% endif %}
         </div>
     </div>
 
+    <!-- Overview Section -->
+    <div class="movie-description">
+        <h2>Overview</h2>
+        <hr>
+        <p>{{ movie.description|default:"No description available." }}</p>
+    </div>
+
+    <!-- Language Section -->
+    <div class="movie-language">
+        <h2>Languages</h2>
+        <hr>
+        {% if languages %}
+            <div class="lang-list">
+                {% for movie_lang in languages %}
+                    <div>{{ movie_lang.language.language }}</div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No languages have been added yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Cast Section -->
+    <div class="movie-cast">
+        <h2>Cast</h2>
+        <hr>
+        {% if cast %}
+            <div class="cast-list">
+                {% for cast_member in cast %}
+                    <div>{{ cast_member.person.person_name }} as {{ cast_member.character_name }}</div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No cast members have been added yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Review Section -->
     <div class="review-container">
         <h2>User Reviews</h2>
         <hr>
-        <button><a href="{% url 'movies:addreview' movie.id %}">+ Add Your Review</a></button><br><br>
+        <button><a href="{% url 'movies:addreview' movie.id %}">+ Add Your Review</a></button>
+        <br><br>
+
         {% for review in movie.reviews.all %}
-        <div class="single-review">
-            <div>Rating: {{ review.rating }} / 10
-            <p>{{ review.comment }}</p>
-            <p>{{ review.created_at }}</p></div> 
-        </div>
-        <hr>
+            <div class="single-review">
+                <p><strong>Rating:</strong> {{ review.rating }}/10</p>
+                <p>{{ review.comment }}</p>
+                <small>{{ review.created_at }}</small>
+            </div>
         {% empty %}
             <p>No reviews yet.</p>
         {% endfor %}
-        </div>
+    </div>
 </div>
-{% endblock content %}
+{% endblock %}

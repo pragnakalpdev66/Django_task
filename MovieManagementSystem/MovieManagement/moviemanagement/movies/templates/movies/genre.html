@@ -21,9 +21,7 @@
                         <button type="submit">View Movies</button>
                     </div>
                 </form>
-                {% comment %} <button><a href="{% url 'movies:editmovie' movie.id %}">Edit</a></button> {% endcomment %}
                 <button>Edit</button>
-                {% comment %} <button><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete</a></button> {% endcomment %}
                 <button><a href="{% url 'movies:deletegenre' pk=genre.id %}">Delete</a></button>
             <div>
         </div>
@@ -32,4 +30,4 @@
         {% endfor %}
     </div>
 </div>
-{% endblock content %}
+{% endblock content %}  
