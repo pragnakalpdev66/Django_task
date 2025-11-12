@@ -36,12 +36,26 @@
                 <a class="nav-link" href="{% url 'movies:movieDetail' movie.id %}">
                     <div class="movie-card">
                         <div class="movie-poster">
-                            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+                            {% if movie.poster %}
+                                <img src="{{ movie.poster.url }}" alt="{{ movie.title }}">
+                            {% else %}
+                                🎬
+                            {% endif %}
                         </div>
                         <div class="movie-info">
                             <h3>{{ movie.title }}</h3>
                             <p>{{ movie.release_year }} • {{ movie.genre }} • {{ movie.duration }} min</p>
-                            <span> {{ review.rating }} rating * </span>
+                            <span> 
+                                {% comment %} {{ review.rating }} rating *  {% endcomment %}
+                                <p>Rating: {{ movie.rating }}/10</p>
+                                <div class="stars">
+                                {% for i in "12345678910" %}
+                                    {% if forloop.counter <= movie.rating|floatformat:0 %}
+                                    ⭐                        
+                                    {% endif %}
+                                {% endfor %}
+                                </div>
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -51,4 +65,7 @@
         </div>
     </div>
 </div>
+<footer>
+    <p>© 2025 Movie Management System. All rights reserved.</p>
+</footer>
 {% endblock %}

@@ -3,14 +3,14 @@
 {% block title %}11.Add People Page{% endblock %}
 
 {% block content %}
-<div class="movie-container">
+<div class="add-people-container">
     <div></div>
-    <h1>add People Page</h1>
+    <h1>Add New People</h1>
     <div>
         {% if person %}
-        <form action="{% url 'movies:editpeople' person_id=person.id %}" method="post">
+        <form action="{% url 'movies:editpeople' person_id=person.id %}" method="post" anctype="multipart/form-data">
         {% else %}
-        <form action="{% url 'movies:addpeople' %}" method="post">
+        <form action="{% url 'movies:addpeople' %}" method="post" anctype="multipart/form-data">
         {% endif %}
             {% csrf_token %}
             <div><label for="person-name">Full Name: </label>

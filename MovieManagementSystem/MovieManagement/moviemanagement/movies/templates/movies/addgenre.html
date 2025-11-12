@@ -2,9 +2,9 @@
 {% block title %}10.Add Genre Page{% endblock %}
 
 {% block content %}
-<div class="movie-container">
+<div class="add-genre-container">
     <div></div>
-    <h1>add Genre Page</h1>
+    <h1>Add New Genre</h1>
     <div>
         <form action="{% url 'movies:addgenre' %}" method="post">
             {% csrf_token %}

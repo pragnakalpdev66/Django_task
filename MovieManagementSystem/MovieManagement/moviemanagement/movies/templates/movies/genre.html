@@ -3,27 +3,27 @@
 
 {% block content %}
 <div class="genre-container">
-    <div></div>
-    <h1>Genre Page</h1>
-    <div>
-        <a class="nav-link" href="{% url 'movies:addgenre' %}">Add New Genre</a>
+    <div class="genre-header">
+    <h1>All Genres</h1>
+        <button><a class="nav-link" href="{% url 'movies:addgenre' %}">Add New Genre</a></button>
     </div>
-    <div>
+    <div class="genre-list">
         {% for genre in genres %}
-        <div>
-            <h3>{{ genre.genre_name }}</h3>
-            <p>{{ genre.movies.count }} movies</p>
-            <hr>
-            <div class="genre-btn">
+        <div class="genre-card">
+            <div class="genre-info">
+                <h3>{{ genre.genre_name }}</h3>
+                <p>{{ genre.movies.count }} movies</p>
+            </div>
+            <div class="action-btns">
                 <form action="{% url 'movies:movie' %}" method="get">
                     <div name='genres'>
                         <input type="hidden" name="genres" value="{{ genre.genre_name }}">
-                        <button type="submit">View Movies</button>
+                        <button class="genres-btns" type="submit">View Movies</button>
                     </div>
                 </form>
-                <button>Edit</button>
-                <button><a href="{% url 'movies:deletegenre' pk=genre.id %}">Delete</a></button>
-            <div>
+                <button class="genres-btns">Edit</button>
+                <button class="genres-btns"><a href="{% url 'movies:deletegenre' pk=genre.id %}">Delete</a></button>
+            </div>
         </div>
         {% empty %}
         <p>No genres found.</p>

@@ -12,41 +12,41 @@
     <!-- whole-page -->
     <div class="whole-container">
             
-        <!-- navbar -->
-        <div class="navbar">
-            <div><h3>Movie Management System</h3></div>
-            <div class="navbar-navitems">
-                <div class="nav-item">
-                    <a class="nav-link" href="{% url 'movies:home' %}">Home</a>
-                </div>
-                <div class="nav-item">
-                    <a class="nav-link" href="{% url 'movies:movie' %}">Movies</a>
-                </div>
-                <div class="nav-item">
-                    <a class="nav-link" href="{% url 'movies:genre' %}">Genre</a>
-                </div>
-                <div class="nav-item">
-                    <a class="nav-link" href="{% url 'movies:people' %}">People</a>
-                </div>
-                <div class="nav-item">
-                    <a class="nav-link" href="{% url 'movies:addmovie' %}">Add Movie</a>
+        <head>
+            <!-- navbar -->
+            <div class="navbar">
+                <div><h3>Movie Management System</h3></div>
+                <div class="navbar-navitems">
+                    <div class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:home' %}">Home</a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:movie' %}">Movies</a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:genre' %}">Genre</a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:people' %}">People</a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="{% url 'movies:addmovie' %}">Add Movie</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        </head>
 
-        <!-- Page content -->
-        <div class="main-content">
-            {% block content %}
+        <main>
+            <!-- Page content -->
+            <div class="main-content">
+                {% block content %}
 
-            <br><br><br>
-            {% endblock %}
-        </div>
+                <br><br><br>
+                {% endblock %}
+            </div>
+        </main>
         
-        <footer>
-            <p>© 2025 Movie Management System. All rights reserved.</p>
-        </footer>
-        
+        {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script> {% endcomment %}
     </div>
-    {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script> {% endcomment %}
   </body>
 </html>

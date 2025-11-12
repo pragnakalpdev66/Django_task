@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="movie-container">
-    <div class="head-container">
+    <div class="movie-header">
         <h2>All Movies</h2>
         <button><a class="nav-link" href="{% url 'movies:addmovie' %}">Add New Movie</a></button>
     </div>
@@ -13,7 +13,7 @@
         <form class="filter-movie" method="get" action="{% url 'movies:movie' %}" role="search">
             <div class="filter-grp">
                 <label for="genre" id="form-label">Genre</label>
-                <select name="genres" id="genre" class="form-select">
+                <select name="genres" id="genres" class="form-select">
                     <option value="all">All Genres</option>
                     {% for genre in genres %}
                         <option value="{{ genre.genre_name }}">{{ genre.genre_name }}</option>
