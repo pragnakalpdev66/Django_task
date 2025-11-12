@@ -1,4 +1,5 @@
 from django.db import models # type: ignore
+from django.db.models import Q # type: ignore
 from django.core.validators import MaxValueValidator, MinValueValidator # type: ignore
 
 class Genre(models.Model):
@@ -17,11 +18,11 @@ class Person(models.Model):
     person_name = models.CharField(max_length=100)
     role_type = models.CharField(max_length=10, choices=Role.choices)
     bio = models.TextField(null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+    profile_photo = models.ImageField(upload_to='posters/', blank=True, null=True)
 
     def __str__(self):
         return self.person_name
-
-    birth_date = models.DateField(null=True, blank=True)
 
 class Movie(models.Model):
     title = models.CharField(max_length=200)
@@ -31,7 +32,7 @@ class Movie(models.Model):
     poster = models.ImageField(upload_to='posters/', null=True, blank=True)
     rating = models.FloatField(default=0.0)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
-    director = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, limit_choices_to={'role_type': 'director'})
+    director = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, limit_choices_to={'role_type': 'director'}, related_name='directed_movies')
     created_at = models.DateTimeField(auto_now_add=True)
 
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name='movies')
@@ -44,8 +45,6 @@ class MovieCast(models.Model):
     movie_name = models.ForeignKey(Movie, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE, limit_choices_to={'role_type': 'actor'})
     character_name = models.CharField(max_length=100)
-
-    director = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, related_name="directed_movies")
 
 
     class Meta:
@@ -80,3 +79,11 @@ class Review(models.Model):
     )
     comment = models.TextField(default=None)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=Q(rating__range=(1, 10)),
+                name='rating_in_range'
+            )
+        ]

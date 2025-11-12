@@ -3,14 +3,14 @@
 {% block title %}4.Add Movie Page{% endblock %}
 
 {% block content %}
-<div class="movie-container">
+<div class="add-movie-container">
     <div></div>
     <h1>Add New Movie</h1>
 
     {% if movie %}
-    <form action="{% url 'movies:editmovie' movie_id=movie.id %}" method="post">
+    <form action="{% url 'movies:editmovie' movie_id=movie.id %}" method="post" enctype="multipart/form-data">
     {% else %}
-    <form action="{% url 'movies:addmovie' %}" method="post">
+    <form action="{% url 'movies:addmovie' %}" method="post" enctype="multipart/form-data">
     {% endif %}
         
     {% csrf_token %}
@@ -63,7 +63,7 @@
 
         <div class="poster">
             <label for="poster">Poster (optional):</label>
-            <input type="file" name="poster" id="poster" />
+            <input type="file" name="poster" id="poster" accept="image/*" />
         </div>
 
         <div class="btn">

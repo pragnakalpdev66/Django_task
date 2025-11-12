@@ -7,6 +7,7 @@ from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLangua
 from datetime import date
 from django.urls import reverse_lazy, reverse # type: ignore
 from django.contrib import messages # type: ignore
+from django.db.models import Avg # type: ignore 
 
 # Home
 class HomePageView(TemplateView):
@@ -102,7 +103,11 @@ class AddEditMovieView(View):
         duration = request.POST.get('duration')
         genre_name = request.POST.get('genre') or request.POST.get('genre_name')
         director_id = request.POST.get('director')
+        uploaded_poster = request.FILES.get('poster') 
 
+        print("FILES:", request.FILES)
+        print("uploaded_poster:", uploaded_poster)
+        
         if title:
             genre_obj = None
             if genre_name:
@@ -134,6 +139,10 @@ class AddEditMovieView(View):
                     movie.duration = int(duration) if duration and duration.isdigit() else None
                     movie.genre = genre_obj
                     movie.director = director_obj
+
+                    if uploaded_poster:
+                        movie.poster = uploaded_poster
+
                     movie.save()
                     print(f"Updated movie: {movie}")
 
@@ -144,7 +153,8 @@ class AddEditMovieView(View):
                     release_year=int(release_year) if release_year and release_year.isdigit() else None,
                     duration=int(duration) if duration and duration.isdigit() else None,
                     genre=genre_obj,
-                    director=director_obj
+                    director=director_obj,
+                    poster=uploaded_poster
                 )
                 print(f"Created movie: {movie}")
                 # redirect to manage cast/language after adding
@@ -262,9 +272,14 @@ class AddEditPeopleView(View):
         role_type = request.POST.get('role_type')
         birth_date_str = request.POST.get('birth_date')
         bio = request.POST.get('bio')
+        profile_photo = request.FILES.get('profile_photo')
+
+        print("FILES:", request.FILES)
+        print("uploaded_poster:", profile_photo)
 
         if person_id:
             person = get_object_or_404(Person, id=person_id)
+            
         else:
             person = Person()
 
@@ -279,6 +294,9 @@ class AddEditPeopleView(View):
         person.person_name=person_name
         person.role_type=role_type
         person.bio=bio
+
+        if profile_photo:
+                person.profile_photo = profile_photo
         person.save()
         
         return redirect('movies:people')
@@ -298,30 +316,71 @@ class GenrePageView(TemplateView):
         context['genres'] = Genre.objects.all()
         return context
 
+# @method_decorator(csrf_protect, name='dispatch')
+# class AddGenreView(View):
+#     template_name = 'movies/addgenre.html'
+
+#     def get(self, request, *args, **kwargs):
+#         return render(request, self.template_name)
+
+#     def post(self, request, *args, **kwargs):
+#         print("Entering AddGenreView POST block")
+#         genre_name = request.POST.get('genre_name')
+#         try: 
+#             if genre_name:
+#                 Genre.objects.create(genre_name=genre_name)
+#             return redirect('movies:genre')
+#         except Exception as e:
+#             messages.error(request, f"{genre_name} already been added!")
+#         return render(request, self.template_name)
+
 @method_decorator(csrf_protect, name='dispatch')
-class AddGenreView(View):
+class AddEditGenreView(View):
     template_name = 'movies/addgenre.html'
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+    def get(self, request, genre_id=None, *args, **kwargs):
+        genre = None
+        if genre_id:
+            genre = get_object_or_404(Genre, id=genre_id)
+        return render(request, self.template_name, {'genre': genre})
 
-    def post(self, request, *args, **kwargs):
-        print("Entering AddGenreView POST block")
-        genre_name = request.POST.get('genre_name')
-        try: 
-            if genre_name:
+    def post(self, request, genre_id=None, *args, **kwargs):
+        genre_name = request.POST.get('genre_name') or request.POST.get('name')
+        
+        if not genre_name:
+            messages.error(request, "Genre name cannot be empty.")
+            return redirect(request.path)
+
+        try:
+            if genre_id:
+                # Edit existing genre
+                genre = get_object_or_404(Genre, id=genre_id)
+                genre.genre_name = genre_name
+                genre.save()
+                messages.success(request, "Genre updated successfully.")
+            else:
+                # Add new genre
                 Genre.objects.create(genre_name=genre_name)
-            return redirect('movies:genre')
+                messages.success(request, "Genre added successfully.")
         except Exception as e:
-            messages.error(request, f"{genre_name} already been added!")
-        return render(request, self.template_name)
+            messages.error(request, f"Error: {e}")
 
-class DeleteGenre(DeleteView):
-    model = Genre
-    success_url = reverse_lazy("movies:genre")
+        # return redirect('movies:genreListpage')
+        return redirect('movies:genre')
+
+class DeleteGenre(View):
     template_name = 'movies/confirmation.html'
 
+    def get(self, request, id):
+        genre = get_object_or_404(Genre, id=id)
+        return render(request, self.template_name, {'genre': genre})
 
+    def post(self, request, id):
+        genre = get_object_or_404(Genre, id=id)
+        genre.delete()
+        messages.success(request, f"Genre '{genre.name}' deleted successfully.")
+        return redirect('movies:genre')
+    
 # cast and lang
 @method_decorator(csrf_protect, name='dispatch')
 class ManageCastLanguagesView(View):
@@ -435,5 +494,9 @@ class AddReview(TemplateView):
             rating=rating,
             comment=comment,
         )
-        
+
+        avg_rating = Review.objects.filter(movie_name=movie).aggregate(Avg('rating'))['rating__avg'] or 0.0
+        movie.rating = round(avg_rating, 1)
+        movie.save()
+
         return redirect('movies:movieDetail', movie_id=movie.id)

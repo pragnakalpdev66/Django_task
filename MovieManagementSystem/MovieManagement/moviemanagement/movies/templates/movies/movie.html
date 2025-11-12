@@ -4,23 +4,23 @@
 
 {% block content %}
 <div class="movie-container">
-    <div class="head-container">
-        <h1>All Movies</h1>
+    <div class="movie-header">
+        <h2>All Movies</h2>
         <button><a class="nav-link" href="{% url 'movies:addmovie' %}">Add New Movie</a></button>
     </div>
     <br>
     <div class="filter-container">
         <form class="filter-movie" method="get" action="{% url 'movies:movie' %}" role="search">
-            <div class="genre-dropdown">
+            <div class="filter-grp">
                 <label for="genre" id="form-label">Genre</label>
-                <select name="genres" id="genre" class="form-select">
+                <select name="genres" id="genres" class="form-select">
                     <option value="all">All Genres</option>
                     {% for genre in genres %}
                         <option value="{{ genre.genre_name }}">{{ genre.genre_name }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div>
+            <div class="filter-grp">
                 <label for="years_list">Year</label>
                 <select name="year">
                     <option value="all">All Years</option>
@@ -29,20 +29,16 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="search-box">
+            <div class="filter-grp">
                 <label for="search_movie">Search</label>
                 <input type="search" name="search_movie" value="{{ request.GET.search_movie|default:'' }}" placeholder="Search by title..."/>
             </div>
-            <div class="btn-apply-filter">
-                <button type="submit">Apply Filters</button>
-            </div>
+            <button class="filter-grp" type="submit">Apply Filters</button>
         </form>
-    </div>
-    <hr>                                        
+    </div>                                       
     
     <div class="movies-section">
         <table>
-            movies
             <thead>
                 <tr>
                     <th>Title</th>
@@ -62,7 +58,18 @@
                     <td>{{ movie.director.person_name }}</td>
                     <td>{{ movie.release_year }}</td>
                     <td>{{ movie.duration }} min</td>
-                    <td>*</td>
+                    <td>
+                        <span>
+                            <p> ⭐ {{ movie.rating }}</p>
+                            <div class="stars">
+                            {% for i in "12345678910" %}
+                                {% if forloop.counter <= movie.rating|floatformat:0 %}
+                                ⭐                        
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </span>
+                    </td>
                     <td>
                         <button><a href="{% url 'movies:movieDetail' movie.id %}">View</a></button>
                         <button><a href="{% url 'movies:editmovie' movie.id %}">Edit</a></button>
