@@ -15,14 +15,20 @@
                 <p>{{ genre.movies.count }} movies</p>
             </div>
             <div class="action-btns">
-                <form action="{% url 'movies:movie' %}" method="get">
-                    <div name='genres'>
-                        <input type="hidden" name="genres" value="{{ genre.genre_name }}">
-                        <button class="genres-btns" type="submit">View Movies</button>
-                    </div>
-                </form>
-                <button class="genres-btns">Edit</button>
-                <button class="genres-btns"><a href="{% url 'movies:deletegenre' pk=genre.id %}">Delete</a></button>
+                <div>
+                    <form action="{% url 'movies:movie' %}" method="get">
+                        <div name='genres'>
+                            <input type="hidden" name="genres" value="{{ genre.genre_name }}">
+                            <button class="genres-btns" type="submit">View Movies</button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <button class="genres-btns"><a href="{% url 'movies:editgenre' genre.id %}">Edit</button>
+                </div>
+                <div>
+                    <button class="genres-btns"><a href="{% url 'movies:deletegenre' pk=genre.id %}">Delete</a></button>
+                </div>
             </div>
         </div>
         {% empty %}

@@ -3,18 +3,19 @@
 {% block title %}8.Add Review Page{% endblock %}
 
 {% block content %}
-<div class="review-container">
-    <h1>Add Your Review</h1>
-    <div><h3>{{ movie.title }} ({{ movie.release_year }})<h3></div>
+<div class="add-review-container">
+    <div class="movie-title-bar">
+        <h3> Add Your Review for <i>{{ movie.title }} ({{ movie.release_year }})</i><h3>
+    </div>
     <form action="{% url 'movies:addreview' movie.id %}" method="post">
         {% csrf_token %}
-        <div class="add-rating">
+        <div class="add-review">
             <label for="rating">Your Rating</label>
-            <input type="number" name="rating">
+            <input type="number" name="rating" required>
             <p>Select a rating from 1 (worst) to 10 (best)</p>
         </div>
-        <div class="add-comment">
-            <label for="comment">Your Review</label>
+        <div class="add-review">
+            <label for="comment">Your Rating</label>
             <textarea placeholder="write your review here..." name="comment"></textarea>
             <p>Share your thoughts about the movie</p>
         </div>

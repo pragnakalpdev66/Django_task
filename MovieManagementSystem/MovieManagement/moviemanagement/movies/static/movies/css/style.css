@@ -174,16 +174,18 @@ footer {
 
 /* MOVIE BLOCK */
 .movie-block,
-.people-section,
-.directed-movies,
-.acted-movies {
+.people-section
+/* , */
+/* .directed-movies, */
+/* .acted-movies  */
+{
     /* display: flex;
     flex-wrap: wrap; */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1.5rem;
     margin-top: 2rem;
-    padding: 20px;
+    /* padding: 20px; */
 }
 
 .movie-card,
@@ -206,7 +208,7 @@ footer {
 .person-profile{
     background-color: var(--movie-poster);
     width: 100%;
-    padding-bottom: 140%;
+    /* padding-bottom: 140%; */
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     height: 280px;
@@ -223,7 +225,14 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     object-fit: cover;
+}
+.movie-poster svg,
+.person-profile svg {
+    justify-content: baseline;
+    margin: 40% 0;
 }
 
 .movie-info,
@@ -245,14 +254,17 @@ footer {
 }
 
 .movie-info p,
-.person-info p {
+.person-info p,
+.add-review p {
     font-size: small;
     margin: 0;
     color: var(--small-txt);
 }
 .movie-info span,
 .person-info span,
-.person-main span {
+.person-main span, 
+.movie-info h2 span 
+{
     font-weight: bold;
     background: var(--search-btn);
     color: var(--nav-text);
@@ -483,9 +495,9 @@ footer {
     border-bottom: 1px solid #ddd;
 }
 
-.movie-detail h2 span {
+ /* {
     color: #e0a800;
-}
+} */
 
 /* Action Buttons */
 .movie-detail button,
@@ -513,7 +525,8 @@ footer {
 
 /* Description, Language, Cast sections */
 .movie-detail-upper-block,
-.review-container {
+.review-container,
+.person-detail-container-box {
     background-color: var(--card);
     border-radius: 8px;
     padding: 1.5rem 2rem;
@@ -522,7 +535,8 @@ footer {
 }
 .movie-description,
 .movie-language,
-.movie-cast {
+.movie-cast,
+.bio p {
     /* background-color: var(--card); */
     /* border-radius: 8px; */
     /* padding: 1.5rem 2rem; */
@@ -613,13 +627,16 @@ footer {
 .person-detail-container,
 .add-genre-container,
 .add-people-container,
-.manage-cast-lang-container {
+.manage-cast-lang-container,
+.add-review-container {
     padding: 2rem 10rem;
 }
 
 .add-movie-container form,
 .add-genre-container form,
-.add-people-container form {
+.add-people-container form,
+.add-review-container form,
+.add-review-container .movie-title-bar {
     max-width: 600px;
     margin: 0 auto;
     background-color: var(--card);
@@ -631,6 +648,11 @@ footer {
     gap: 1.2rem;
 }
 
+.add-review-container .movie-title-bar {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+}
+
 .add-movie-container h1,
 .add-genre-container h1,
 .add-people-container h1 {
@@ -640,11 +662,13 @@ footer {
     margin-bottom: 1rem;
 }
 
+
 .add-movie-container label,
 .add-genre-container label,
 .add-people-container label,
 .cast-form label,
-.lang-form label {
+.lang-form label,
+.add-review-container label {
     font-weight: 600;
     margin-bottom: 0.4rem;
     color: var(--text);
@@ -654,7 +678,8 @@ footer {
 .add-movie-container input[type="number"], .add-people-container input[type="date"],
 .add-movie-container textarea, .add-people-container textarea,
 .add-movie-container select, .add-people-container select,
-.cast-form select, .lang-form select, .cast-form input[type="text"] {
+.cast-form select, .lang-form select, .cast-form input[type="text"],
+.add-review input[type="number"], .add-review textarea {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #ccc;
@@ -668,13 +693,16 @@ footer {
 .add-movie-container input:focus, .add-genre-container input:focus, .add-people-container input:focus,
 .add-movie-container textarea:focus, .add-people-container textarea:focus,
 .add-movie-container select:focus, .add-people-container select:focus,
-.cast-form select:focus, .lang-form select:focus, .cast-form input:focus {
+.cast-form select:focus, .lang-form select:focus, .cast-form input:focus,
+.add-review-container input:focus, .add-review-container textarea:focus {
     border-color: var(--bg2);
     box-shadow: 0 0 4px rgba(51,72,95,0.3);
     outline: none;
 }
 
-.add-movie-container textarea, .add-people-container textarea {
+.add-movie-container textarea,
+.add-people-container textarea,
+.add-review-container textarea {
     resize: vertical;
 }
 
@@ -690,6 +718,10 @@ footer {
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
+}
+.movie-title-bar i {
+    color: var(--bg2);
+    font-size: larger;
 }
 .grid-container {
     display: grid;
@@ -714,7 +746,8 @@ footer {
 .add-movie-container .btn,
 .add-genre-container .btn,
 .add-people-container .btn,
-.btn-add-cast-lang {
+.btn-add-cast-lang,
+.review-btn {
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -725,7 +758,8 @@ footer {
 .add-genre-container .btn button,
 .add-people-container .btn button,
 .btn-add-cast-lang button,
-.action-bar button {
+.action-bar button,
+.review-btn button {
     flex: 1;
     padding: 10px 14px;
     background-color: var(--bg2);
@@ -739,7 +773,8 @@ footer {
 
 .add-movie-container .btn button:hover,
 .add-genre-container .btn button:hover,
-.add-people-container .btn button:hover {
+.add-people-container .btn button:hover,
+.review-btn button:hover {
     background-color: #2a3a4f;
     transform: scale(1.02);
 }
@@ -831,13 +866,29 @@ footer {
   margin-bottom: 0.3rem;
 }
 .action-btns {
-    display: inline;
+    display: flex;
     gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
 }
-.action-btns a {
+
+.genres-btns {
+    background-color: #2e3c55;  /* dark navy shade like snapshot */
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+/* .action-btns a {
     text-decoration: none;
     color: var(--nav-text); 
-}
+} */
 
 .genres-btns {
     display: inline-flex;
@@ -860,4 +911,53 @@ footer {
   .genre-list {
     grid-template-columns: 1fr;
   }
+}
+
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    background-color: rgba(0,0,0,0.4);
+    backdrop-filter: blur(3px);
+}
+
+.confirmation-container form {
+    background: var(--card);
+    padding: 30px 50px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.upper-block h3 {
+    margin-bottom: 10px;
+    color: var(--bg2);
+}
+
+.confirm-btns {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.confirm-btns button {
+    background-color: var(--bg2);
+    color: var(--white);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.confirm-btns button:hover {
+    background-color: var(--nav-bg);
+}
+
+.confirm-btns a {
+    color: var(--nav-text);
+    text-decoration: none;
+    display: block;
 }

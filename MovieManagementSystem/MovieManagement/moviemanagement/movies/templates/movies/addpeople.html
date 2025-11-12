@@ -8,9 +8,9 @@
     <h1>Add New People</h1>
     <div>
         {% if person %}
-        <form action="{% url 'movies:editpeople' person_id=person.id %}" method="post" anctype="multipart/form-data">
+        <form action="{% url 'movies:editpeople' person_id=person.id %}" method="post" enctype="multipart/form-data">
         {% else %}
-        <form action="{% url 'movies:addpeople' %}" method="post" anctype="multipart/form-data">
+        <form action="{% url 'movies:addpeople' %}" method="post" enctype="multipart/form-data">
         {% endif %}
             {% csrf_token %}
             <div><label for="person-name">Full Name: </label>
@@ -39,7 +39,7 @@
 
             <div class="profile-photo">
                 <label for="profile-photo"> Profile Photo</label>
-                <input type="file" name="profile_photo" id="profile-photo" />
+                <input type="file" name="profile_photo" id="profile-photo" accept="image/*" />
             </div>
 
             <div class="btn">

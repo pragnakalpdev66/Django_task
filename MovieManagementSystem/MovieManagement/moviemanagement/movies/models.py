@@ -1,4 +1,5 @@
 from django.db import models # type: ignore
+from django.db.models import Q # type: ignore
 from django.core.validators import MaxValueValidator, MinValueValidator # type: ignore
 
 class Genre(models.Model):
@@ -78,3 +79,11 @@ class Review(models.Model):
     )
     comment = models.TextField(default=None)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=Q(rating__range=(1, 10)),
+                name='rating_in_range'
+            )
+        ]

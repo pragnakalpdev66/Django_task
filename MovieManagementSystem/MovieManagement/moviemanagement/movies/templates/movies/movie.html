@@ -58,7 +58,18 @@
                     <td>{{ movie.director.person_name }}</td>
                     <td>{{ movie.release_year }}</td>
                     <td>{{ movie.duration }} min</td>
-                    <td>*</td>
+                    <td>
+                        <span>
+                            <p> ⭐ {{ movie.rating }}</p>
+                            <div class="stars">
+                            {% for i in "12345678910" %}
+                                {% if forloop.counter <= movie.rating|floatformat:0 %}
+                                ⭐                        
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </span>
+                    </td>
                     <td>
                         <button><a href="{% url 'movies:movieDetail' movie.id %}">View</a></button>
                         <button><a href="{% url 'movies:editmovie' movie.id %}">Edit</a></button>

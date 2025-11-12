@@ -294,7 +294,7 @@ class AddEditPeopleView(View):
         person.person_name=person_name
         person.role_type=role_type
         person.bio=bio
-        
+
         if profile_photo:
                 person.profile_photo = profile_photo
         person.save()
@@ -316,30 +316,71 @@ class GenrePageView(TemplateView):
         context['genres'] = Genre.objects.all()
         return context
 
+# @method_decorator(csrf_protect, name='dispatch')
+# class AddGenreView(View):
+#     template_name = 'movies/addgenre.html'
+
+#     def get(self, request, *args, **kwargs):
+#         return render(request, self.template_name)
+
+#     def post(self, request, *args, **kwargs):
+#         print("Entering AddGenreView POST block")
+#         genre_name = request.POST.get('genre_name')
+#         try: 
+#             if genre_name:
+#                 Genre.objects.create(genre_name=genre_name)
+#             return redirect('movies:genre')
+#         except Exception as e:
+#             messages.error(request, f"{genre_name} already been added!")
+#         return render(request, self.template_name)
+
 @method_decorator(csrf_protect, name='dispatch')
-class AddGenreView(View):
+class AddEditGenreView(View):
     template_name = 'movies/addgenre.html'
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+    def get(self, request, genre_id=None, *args, **kwargs):
+        genre = None
+        if genre_id:
+            genre = get_object_or_404(Genre, id=genre_id)
+        return render(request, self.template_name, {'genre': genre})
 
-    def post(self, request, *args, **kwargs):
-        print("Entering AddGenreView POST block")
-        genre_name = request.POST.get('genre_name')
-        try: 
-            if genre_name:
+    def post(self, request, genre_id=None, *args, **kwargs):
+        genre_name = request.POST.get('genre_name') or request.POST.get('name')
+        
+        if not genre_name:
+            messages.error(request, "Genre name cannot be empty.")
+            return redirect(request.path)
+
+        try:
+            if genre_id:
+                # Edit existing genre
+                genre = get_object_or_404(Genre, id=genre_id)
+                genre.genre_name = genre_name
+                genre.save()
+                messages.success(request, "Genre updated successfully.")
+            else:
+                # Add new genre
                 Genre.objects.create(genre_name=genre_name)
-            return redirect('movies:genre')
+                messages.success(request, "Genre added successfully.")
         except Exception as e:
-            messages.error(request, f"{genre_name} already been added!")
-        return render(request, self.template_name)
+            messages.error(request, f"Error: {e}")
 
-class DeleteGenre(DeleteView):
-    model = Genre
-    success_url = reverse_lazy("movies:genre")
+        # return redirect('movies:genreListpage')
+        return redirect('movies:genre')
+
+class DeleteGenre(View):
     template_name = 'movies/confirmation.html'
 
+    def get(self, request, id):
+        genre = get_object_or_404(Genre, id=id)
+        return render(request, self.template_name, {'genre': genre})
 
+    def post(self, request, id):
+        genre = get_object_or_404(Genre, id=id)
+        genre.delete()
+        messages.success(request, f"Genre '{genre.name}' deleted successfully.")
+        return redirect('movies:genre')
+    
 # cast and lang
 @method_decorator(csrf_protect, name='dispatch')
 class ManageCastLanguagesView(View):
