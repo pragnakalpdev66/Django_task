@@ -6,7 +6,7 @@
 <div class="people-container">
     <div class="people-header">
         <h1>All People</h1>
-        <button><a class="nav-link" href="{% url 'movies:addpeople' %}">+ Add New Person</a></button>
+        <a class="nav-link" href="{% url 'movies:addpeople' %}"><button>+ Add New Person</button></a>
     </div>
     <br>
 
@@ -55,9 +55,9 @@
                 {% comment %} <p>{% if acted_movie_casts %} {{ person.moviecast_set.count }} movies acted {% else %} {{ person.directed_movies.count }} movies directed{% endif %}</p> {% endcomment %}
             </div>
             <div class="action-btn">
-                <button><a href="{% url 'movies:personDetail' person.id %}">View</a></button>
-                <button><a href="{% url 'movies:editpeople' person.id %}">Edit</a></button>
-                <button><a href="{% url 'movies:deletepeople' pk=person.id %}">Delete</a></button>
+                <a href="{% url 'movies:personDetail' person.id %}"><button>View</button></a>
+                <a href="{% url 'movies:editpeople' person.id %}"><button>Edit</button></a>
+                <a href="{% url 'movies:deletepeople' pk=person.id %}"><button>Delete</button></a>
             </div>
         </div>
     {% comment %} </a> {% endcomment %}

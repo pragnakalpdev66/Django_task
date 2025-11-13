@@ -19,7 +19,7 @@ urlpatterns = [
     path('genrepage/', views.GenrePageView.as_view(), name='genre'),
     path('addgenrepage/', views.AddEditGenreView.as_view(), name='addgenre'),
     path('editgenre/<int:genre_id>/', views.AddEditGenreView.as_view(), name='editgenre'),
-    path('deletegenre/<int:id>/', views.DeleteGenre.as_view(), name='deletegenre'),
+    path('deletegenre/<int:pk>/', views.DeleteGenre.as_view(), name='deletegenre'),
 
     
     path('peoplepage/', views.PersonListView.as_view(), name='people'),
