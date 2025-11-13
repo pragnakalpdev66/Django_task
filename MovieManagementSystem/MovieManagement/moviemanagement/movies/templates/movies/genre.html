@@ -5,7 +5,7 @@
 <div class="genre-container">
     <div class="genre-header">
     <h1>All Genres</h1>
-        <button><a class="nav-link" href="{% url 'movies:addgenre' %}">Add New Genre</a></button>
+        <a class="nav-link" href="{% url 'movies:addgenre' %}"><button>+ Add New Genre</button></a>
     </div>
     <div class="genre-list">
         {% for genre in genres %}
@@ -17,17 +17,17 @@
             <div class="action-btns">
                 <div>
                     <form action="{% url 'movies:movie' %}" method="get">
-                        <div name='genres'>
+                        {% comment %} <div name='genres'> {% endcomment %}
                             <input type="hidden" name="genres" value="{{ genre.genre_name }}">
                             <button class="genres-btns" type="submit">View Movies</button>
-                        </div>
+                        {% comment %} </div> {% endcomment %}
                     </form>
                 </div>
                 <div>
-                    <button class="genres-btns"><a href="{% url 'movies:editgenre' genre.id %}">Edit</button>
+                    <a href="{% url 'movies:editgenre' genre.id %}"><button class="genres-btns">Edit</button></a>
                 </div>
                 <div>
-                    <button class="genres-btns"><a href="{% url 'movies:deletegenre' pk=genre.id %}">Delete</a></button>
+                    <a href="{% url 'movies:deletegenre' pk=genre.id %}"><button class="genres-btns">Delete</button></a>
                 </div>
             </div>
         </div>

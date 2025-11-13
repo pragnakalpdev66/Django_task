@@ -11,7 +11,7 @@
         {% csrf_token %}
         <div class="add-review">
             <label for="rating">Your Rating</label>
-            <input type="number" name="rating" required>
+            <input type="number" name="rating" min="1" max="10" step="1" required>
             <p>Select a rating from 1 (worst) to 10 (best)</p>
         </div>
         <div class="add-review">

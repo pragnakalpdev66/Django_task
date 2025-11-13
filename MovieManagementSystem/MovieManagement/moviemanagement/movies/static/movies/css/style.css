@@ -874,8 +874,8 @@ footer {
 }
 
 .genres-btns {
-    background-color: #2e3c55;  /* dark navy shade like snapshot */
-    color: #fff;
+    background-color: var(--bg2);  /* dark navy shade like snapshot */
+    color: var(--nav-text);
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
@@ -890,7 +890,7 @@ footer {
     color: var(--nav-text); 
 } */
 
-.genres-btns {
+/* .genres-btns {
     display: inline-flex;
     flex-wrap: wrap;
     background-color: var(--bg2);
@@ -901,7 +901,7 @@ footer {
     margin-right: 6px;
     cursor: pointer;
     font-size: 14px;
-}
+} */
 @media (max-width: 600px) {
   .genre-header {
     flex-direction: column;

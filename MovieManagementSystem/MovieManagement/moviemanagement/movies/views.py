@@ -342,44 +342,53 @@ class AddEditGenreView(View):
         genre = None
         if genre_id:
             genre = get_object_or_404(Genre, id=genre_id)
-        return render(request, self.template_name, {'genre': genre})
+        
+        context = {
+            'genre': genre
+        }
+        return render(request, self.template_name, context)
 
     def post(self, request, genre_id=None, *args, **kwargs):
-        genre_name = request.POST.get('genre_name') or request.POST.get('name')
+        genre_name = request.POST.get('genre_name')
         
         if not genre_name:
             messages.error(request, "Genre name cannot be empty.")
-            return redirect(request.path)
+            return redirect(self.request.path)
 
         try:
             if genre_id:
-                # Edit existing genre
                 genre = get_object_or_404(Genre, id=genre_id)
                 genre.genre_name = genre_name
                 genre.save()
-                messages.success(request, "Genre updated successfully.")
+                print(f"Updated genre: {genre}")
             else:
-                # Add new genre
-                Genre.objects.create(genre_name=genre_name)
-                messages.success(request, "Genre added successfully.")
+                genre = Genre.objects.create(genre_name=genre_name)
+                print(f"Created genre: {genre}")
+            
+            # genre.genre_name = genre_name
+            # genre.save()
+
+            return redirect('movies:genre')
+        
         except Exception as e:
             messages.error(request, f"Error: {e}")
+            return redirect(self.request.path)
 
-        # return redirect('movies:genreListpage')
-        return redirect('movies:genre')
 
-class DeleteGenre(View):
+class DeleteGenre(DeleteView):
+    model = Genre
+    success_url = reverse_lazy("movies:genre")
     template_name = 'movies/confirmation.html'
 
-    def get(self, request, id):
-        genre = get_object_or_404(Genre, id=id)
-        return render(request, self.template_name, {'genre': genre})
+    # def get(self, request, id):
+    #     genre = get_object_or_404(Genre, id=id)
+    #     return render(request, self.template_name, {'genre': genre})
 
-    def post(self, request, id):
-        genre = get_object_or_404(Genre, id=id)
-        genre.delete()
-        messages.success(request, f"Genre '{genre.name}' deleted successfully.")
-        return redirect('movies:genre')
+    # def post(self, request, id):
+    #     genre = get_object_or_404(Genre, id=id)
+    #     genre.delete()
+    #     messages.success(request, f"Genre '{genre.name}' deleted successfully.")
+    #     return redirect('movies:genre')
     
 # cast and lang
 @method_decorator(csrf_protect, name='dispatch')
@@ -389,7 +398,7 @@ class ManageCastLanguagesView(View):
     def get(self, request, movie_id, *args, **kwargs):
         movie = get_object_or_404(Movie, id=movie_id)
         actors = Person.objects.filter(role_type=Person.Role.ACTOR)
-        languages = {1:'English', 2:'Spanish', 3:'French', 4:'Filipino'} # Language.objects.all() # MovieLanguage.objects.all()
+        languages =  Language.objects.all() # MovieLanguage.objects.all() {1:'English', 2:'Spanish', 3:'French', 4:'Filipino'}
         cast_list = MovieCast.objects.filter(movie_name=movie)
         movie_languages = MovieLanguage.objects.filter(movie_name=movie)
 
@@ -489,14 +498,17 @@ class AddReview(TemplateView):
         rating = request.POST.get('rating')
         comment = request.POST.get('comment')
 
-        review = Review.objects.create(
+        try :
+            review = Review.objects.create(
             movie_name=movie,
             rating=rating,
             comment=comment,
-        )
+            )
 
-        avg_rating = Review.objects.filter(movie_name=movie).aggregate(Avg('rating'))['rating__avg'] or 0.0
-        movie.rating = round(avg_rating, 1)
-        movie.save()
+            avg_rating = Review.objects.filter(movie_name=movie).aggregate(Avg('rating'))['rating__avg'] or 0.0
+            movie.rating = round(avg_rating, 1)
+            movie.save()
+        except Exception as e:
+            messages.error(request, f"Error while adding review: {e}")
 
         return redirect('movies:movieDetail', movie_id=movie.id)

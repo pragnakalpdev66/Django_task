@@ -66,8 +66,8 @@
                         <label>Select Language</label>
                         <select name="language" required>
                             <option value="">Choose a Language...</option>
-                            {% for i,lang in languages.items %}
-                                <option value="{{ lang }}">{{ lang }}</option>
+                            {% for lang in languages %}
+                                <option value="{{ lang.pk }}">{{ lang.language }}</option>
                             {% endfor %}
                         </select>
                     </div>  
@@ -103,7 +103,7 @@
         <form action="{% url 'movies:manage_cast_language' movie_id=movie.id %}" method="post">
             {% csrf_token %}
             <div class="bottom-btns">
-                <button><a href="{% url 'movies:movie' %}">Back to Movie</a></button>
+                <a href="{% url 'movies:movie' %}"><button>Back to Movie</button></a>
                 <button type="submit" name="done">Done</button>
             </div>
         </form>
