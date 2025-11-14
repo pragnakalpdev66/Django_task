@@ -40,6 +40,11 @@ INSTALLED_APPS = [
     'movies',
 ]
 
+AUTH_USER_MODEL = 'movies.Users' 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'homepage'
+LOGOUT_REDIRECT_URL = 'login'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

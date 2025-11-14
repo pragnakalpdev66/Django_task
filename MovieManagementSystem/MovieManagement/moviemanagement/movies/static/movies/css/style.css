@@ -174,11 +174,7 @@ footer {
 
 /* MOVIE BLOCK */
 .movie-block,
-.people-section
-/* , */
-/* .directed-movies, */
-/* .acted-movies  */
-{
+.people-section {
     /* display: flex;
     flex-wrap: wrap; */
     display: grid;
@@ -273,16 +269,6 @@ footer {
     border-radius: 3px;
     align-self: flex-start;
 }
-/* .movie-card a {
-    text-decoration: none;
-    display: block;
-}
-*/
-
-
-
-
-
 
 /* Responsive Tweaks */
 @media (max-width: 768px) {
@@ -294,42 +280,6 @@ footer {
         height: 220px;
     }
 } 
-
-
-/* Movie List Page*/
-/* .movie-container {
-    padding: 2rem 10rem;
-}
-
-.head-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.head-container h2 {
-    font-size: 1.6rem;
-    color: var(--text);
-}
-
-.head-container button {
-    background-color: var(--bg2);
-    border: none;
-    border-radius: 5px;
-    padding: 10px 14px;
-}
-
-.head-container button a {
-    color: var(--nav-text);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.head-container button:hover {
-    background-color: #2a3a4f;
-    transform: scale(1.03);
-} */
 
 /* Filter Section */
 .filter-container {
@@ -494,10 +444,6 @@ footer {
     padding: 8px 10px;
     border-bottom: 1px solid #ddd;
 }
-
- /* {
-    color: #e0a800;
-} */
 
 /* Action Buttons */
 .movie-detail button,
@@ -885,23 +831,7 @@ footer {
     text-decoration: none;
     transition: background-color 0.3s ease, transform 0.1s ease;
 }
-/* .action-btns a {
-    text-decoration: none;
-    color: var(--nav-text); 
-} */
 
-/* .genres-btns {
-    display: inline-flex;
-    flex-wrap: wrap;
-    background-color: var(--bg2);
-    color: var(--nav-text);
-    border: none;
-    border-radius: 4px;
-    padding: 6px 10px;
-    margin-right: 6px;
-    cursor: pointer;
-    font-size: 14px;
-} */
 @media (max-width: 600px) {
   .genre-header {
     flex-direction: column;
