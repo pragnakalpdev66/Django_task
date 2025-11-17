@@ -582,7 +582,8 @@ footer {
 .add-genre-container form,
 .add-people-container form,
 .add-review-container form,
-.add-review-container .movie-title-bar {
+.add-review-container .movie-title-bar,
+.signin-container form {
     max-width: 600px;
     margin: 0 auto;
     background-color: var(--card);
@@ -614,7 +615,8 @@ footer {
 .add-people-container label,
 .cast-form label,
 .lang-form label,
-.add-review-container label {
+.add-review-container label,
+.signin-container label {
     font-weight: 600;
     margin-bottom: 0.4rem;
     color: var(--text);
@@ -625,7 +627,8 @@ footer {
 .add-movie-container textarea, .add-people-container textarea,
 .add-movie-container select, .add-people-container select,
 .cast-form select, .lang-form select, .cast-form input[type="text"],
-.add-review input[type="number"], .add-review textarea {
+.add-review input[type="number"], .add-review textarea,
+.signin-container input[type="text"], .signin-container input[type="password"] {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #ccc;
@@ -640,7 +643,8 @@ footer {
 .add-movie-container textarea:focus, .add-people-container textarea:focus,
 .add-movie-container select:focus, .add-people-container select:focus,
 .cast-form select:focus, .lang-form select:focus, .cast-form input:focus,
-.add-review-container input:focus, .add-review-container textarea:focus {
+.add-review-container input:focus, .add-review-container textarea:focus,
+.signin-container input:focus {
     border-color: var(--bg2);
     box-shadow: 0 0 4px rgba(51,72,95,0.3);
     outline: none;
@@ -693,7 +697,8 @@ footer {
 .add-genre-container .btn,
 .add-people-container .btn,
 .btn-add-cast-lang,
-.review-btn {
+.review-btn,
+.signin-btn {
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -705,7 +710,8 @@ footer {
 .add-people-container .btn button,
 .btn-add-cast-lang button,
 .action-bar button,
-.review-btn button {
+.review-btn button,
+.signin-btn button {
     flex: 1;
     padding: 10px 14px;
     background-color: var(--bg2);
@@ -720,7 +726,8 @@ footer {
 .add-movie-container .btn button:hover,
 .add-genre-container .btn button:hover,
 .add-people-container .btn button:hover,
-.review-btn button:hover {
+.review-btn button:hover,
+.signin-btn button:hover {
     background-color: #2a3a4f;
     transform: scale(1.02);
 }

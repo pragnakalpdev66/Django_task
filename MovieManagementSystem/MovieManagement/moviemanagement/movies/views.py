@@ -13,25 +13,8 @@ from django.views.generic.edit import FormView # type: ignore
 from django.contrib.auth import login, logout, authenticate # type: ignore
 from .form import RegistrationForm, SigninForm # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # type: ignore
-from .mixins import AdminRequiredMixin, UserOnlyReviewMixin
+from .mixins import AdminRequiredMixin, UserAccessMixin
 
-
-    # mixins
-# class AdminRequiredMixin(UserPassesTestMixin):
-#     def test_func(self):
-#         return (self.request.user.is_authenticated 
-#                 and self.request.user.user_role == 'admin'
-#         )
-
-#     def handle_no_permission(self):
-#         messages.error(self.request, "You do not have permission to access this page.")
-#         return redirect('movies:home')
-    
-# class UserOnlyReviewMixin(LoginRequiredMixin):
-#     def dispatch(self, request, *args, **kwargs):
-#         if request.user.user_role == 'user':
-#             return super().dispatch(request, *args, **kwargs)
-#         return redirect('home')
 
 # Home
 class HomePageView(TemplateView):
@@ -63,7 +46,8 @@ class HomePageView(TemplateView):
         return queryset
 
 # Movie
-class MoviePageView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+# class MoviePageView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+class MoviePageView(UserAccessMixin, ListView):
     model = Movie
     template_name = 'movies/movie.html'
     context_object_name = 'movies'
@@ -218,7 +202,8 @@ class MovieDetailView(TemplateView):
         return render(request, self.template_name, context)
 
 #People #peoplepageview
-class PersonListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+# class PersonListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+class PersonListView(UserAccessMixin, ListView):
     model = Person
     template_name = 'movies/people.html'
     context_object_name = 'people'
@@ -320,7 +305,8 @@ class AddEditPeopleView(LoginRequiredMixin, AdminRequiredMixin, View):
         return redirect('movies:people')
 
 # Genre
-class GenrePageView(LoginRequiredMixin, AdminRequiredMixin, TemplateView):
+# class GenrePageView(LoginRequiredMixin, AdminRequiredMixin, TemplateView):
+class GenrePageView(UserAccessMixin, TemplateView):
     template_name = 'movies/genre.html'
 
     def get_context_data(self, **kwargs):
@@ -466,7 +452,7 @@ class RemoveLanguage(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     
 
 # review
-class AddReview(UserOnlyReviewMixin, TemplateView):
+class AddReview(UserAccessMixin, TemplateView):
     template_name = 'movies/addreview.html'
 
     def get(self, request, movie_id, *args, **kwargs):
@@ -509,7 +495,7 @@ class AddReview(UserOnlyReviewMixin, TemplateView):
 #         print(f"DEBUG: All URL patterns available: {dict(resolve('/').url_patterns)}") 
 #         return super().form_valid(form)
 class RegistrationView(FormView):
-    template_name = 'movies/Registration.html'
+    template_name = 'movies/registration.html'
     form_class = RegistrationForm
     success_url = reverse_lazy('movies:signin')
 
@@ -549,10 +535,7 @@ class SigninView(FormView):
 
 # class SignoutView(LogoutView):
 #     next_page = reverse_lazy('movies:signin')
-class SignoutView(View):
-    def get(self, request):
-        logout(request)
-        return redirect('movies:signin')
-
-
-
+# class SignoutView(View):
+#     def get(self, request):
+#         logout(request)
+#         return redirect('movies:signin')

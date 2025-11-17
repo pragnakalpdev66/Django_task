@@ -1,5 +1,6 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.shortcuts import redirect
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin # type: ignore
+from django.shortcuts import redirect # type: ignore
+from django.contrib import messages # type: ignore
 
 class AdminRequiredMixin(UserPassesTestMixin):
     """Only allow admin role."""
@@ -7,9 +8,10 @@ class AdminRequiredMixin(UserPassesTestMixin):
         return self.request.user.is_authenticated and self.request.user.user_role == 'admin'
 
     def handle_no_permission(self):
-        return redirect('movies:home')  # redirect to homepage for non-admin
+        messages.error(self.request, 'You do not have permission to access this page.')
+        # return redirect('movies:home')  
 
-class UserOnlyReviewMixin(UserPassesTestMixin):
+class UserAccessMixin(LoginRequiredMixin):
     """Allow only logged-in regular users to add reviews."""
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.user_role == 'user'
