@@ -41,9 +41,11 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'movies.Users' 
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'homepage'
-LOGOUT_REDIRECT_URL = 'login'
+
+LOGIN_URL = 'movies:signin'
+LOGIN_REDIRECT_URL = 'movies:home'
+LOGOUT_REDIRECT_URL = 'movies:signin'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,7 +62,7 @@ ROOT_URLCONF = 'moviemanagement.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'movies/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

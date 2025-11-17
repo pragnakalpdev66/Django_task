@@ -13,23 +13,25 @@ from django.views.generic.edit import FormView # type: ignore
 from django.contrib.auth import login, logout, authenticate # type: ignore
 from .form import RegistrationForm, SigninForm # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # type: ignore
+from .mixins import AdminRequiredMixin, UserOnlyReviewMixin
+
 
     # mixins
-class AdminRequiredMixin(UserPassesTestMixin):
-    def test_func(self):
-        return (self.request.user.is_authenticated 
-                and self.request.user.user_role == 'admin'
-        )
+# class AdminRequiredMixin(UserPassesTestMixin):
+#     def test_func(self):
+#         return (self.request.user.is_authenticated 
+#                 and self.request.user.user_role == 'admin'
+#         )
 
-    def handle_no_permission(self):
-        messages.error(self.request, "You do not have permission to access this page.")
-        return redirect('movies:home')
+#     def handle_no_permission(self):
+#         messages.error(self.request, "You do not have permission to access this page.")
+#         return redirect('movies:home')
     
-class UserOnlyReviewMixin(LoginRequiredMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.user_role == 'user':
-            return super().dispatch(request, *args, **kwargs)
-        return redirect('home')
+# class UserOnlyReviewMixin(LoginRequiredMixin):
+#     def dispatch(self, request, *args, **kwargs):
+#         if request.user.user_role == 'user':
+#             return super().dispatch(request, *args, **kwargs)
+#         return redirect('home')
 
 # Home
 class HomePageView(TemplateView):
@@ -512,10 +514,10 @@ class RegistrationView(FormView):
     success_url = reverse_lazy('movies:signin')
 
     def form_valid(self, form):
-        form.save()
+        # form.save()
+        ser = form.save()
         messages.success(self.request, "Account created successfully! Please login.")
         return super().form_valid(form)
-
 
 # class SigninView(LoginView):
 #     template_name = 'movies/signin.html'
@@ -529,16 +531,21 @@ class SigninView(FormView):
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
-
+        
         user = authenticate(username=username, password=password)
 
         if user is not None:
             login(self.request, user)
-            return redirect(self.get_success_url())
-        else:
-            messages.error(self.request, "Invalid username or password.")
-            return self.form_invalid(form)
+            messages.success(self.request, f"Welcome back, {user.username}!")
+            return redirect('movies:home')
 
+        messages.error(self.request, "Invalid login credentials!")
+        return self.form_invalid(form)
+
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Invalid username or password!")
+        return super().form_invalid(form)
 
 # class SignoutView(LogoutView):
 #     next_page = reverse_lazy('movies:signin')
