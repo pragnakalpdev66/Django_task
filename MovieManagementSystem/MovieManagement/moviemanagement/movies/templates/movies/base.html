@@ -7,64 +7,73 @@
     <title>{% block title %}Movie Management{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'movies/css/style.css' %}">
 </head>
+
 <body>
     <!-- whole-page -->
     <div class="whole-container">
-            
-        <head>
-            <!-- navbar -->
-            <div class="navbar">
-                <div><h3>Movie Management System</h3></div>
-                <div class="navbar-navitems">
-                    <div class="nav-item">
-                        <a class="nav-link" href="{% url 'movies:home' %}">Home</a>
-                    </div>
-                    <div class="nav-item">
-                        <a class="nav-link" href="{% url 'movies:movie' %}">Movies</a>
-                    </div>
-                    <div class="nav-item">
-                        <a class="nav-link" href="{% url 'movies:genre' %}">Genre</a>
-                    </div>
-                    <div class="nav-item">
-                        <a class="nav-link" href="{% url 'movies:people' %}">People</a>
-                    </div>
-                    <div class="nav-item">
-                        <a class="nav-link" href="{% url 'movies:addmovie' %}">Add Movie</a>
-                    </div>
+
+        <!-- navbar (✔ moved OUTSIDE head tag) -->
+        <div class="navbar">
+            <div><h3>Movie Management System</h3></div>
+            <div class="navbar-navitems">
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'movies:home' %}">Home</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'movies:movie' %}">Movies</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'movies:genre' %}">Genre</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'movies:people' %}">People</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'movies:addmovie' %}">Add Movie</a>
                 </div>
             </div>
-        </head>
+        </div>
 
         <main>
             <!-- Page content -->
             <div class="main-content">
                 {% block content %}
-
                 <br><br><br>
                 {% endblock %}
             </div>
         </main>        
     </div>
+
+    <!-- Toast container -->
+    <div id="toast-container"></div>
+
     <script>
-        function showToast() {
-            const toastContainer = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.classList.add('toast');
-            toast.textContent = 'you dont have access this page';
+        function showToast(message, duration = 3000) {
+            const toastContainer = document.getElementById("toast-container");
+            if (!toastContainer) return;
 
+            const toast = document.createElement("div");
+            toast.classList.add("toast");
+            toast.innerText = message;
             toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add("show");
+            }, 10);
 
             setTimeout(() => {
-                toast.classList.add('show');
-            }, 100); 
-
-            setTimeout(() => {
-                toast.classList.remove('show');
+                toast.classList.remove("show");
                 setTimeout(() => {
                     toast.remove();
                 }, 500);
-            }, 3000);
+            }, duration);
         }
+
+        {% if messages %}
+            {% for message in messages %}
+                showToast("{{ message|escapejs }}");
+            {% endfor %}
+        {% endif %}
     </script>
-  </body>
+</body>
 </html>

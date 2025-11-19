@@ -15,7 +15,6 @@ from django.contrib.auth import login, logout, authenticate # type: ignore
 from .form import RegistrationForm, SigninForm # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # type: ignore
 from .mixins import AdminRequiredMixin, UserAccessMixin
-from django.http import HttpRequest, RawPostDataException # type: ignore
 
 # Home
 class HomePageView(TemplateView):
@@ -487,15 +486,6 @@ class AddReview(UserAccessMixin, TemplateView):
         
         # Authentication
 
-# class RegistrationView(FormView):
-#     template_name = 'movies/registration.html'
-#     form_class = RegistrationForm
-#     success_url = reverse_lazy('movies:signin')
-
-#     def form_valid(self, form):
-#         user = form.save()
-#         print(f"DEBUG: All URL patterns available: {dict(resolve('/').url_patterns)}") 
-#         return super().form_valid(form)
 class RegistrationView(FormView):
     template_name = 'movies/registration.html'
     form_class = RegistrationForm
@@ -503,14 +493,10 @@ class RegistrationView(FormView):
 
     def form_valid(self, form):
         # form.save()
-        ser = form.save()
+        user = form.save()
         messages.success(self.request, "Account created successfully! Please login.")
         return super().form_valid(form)
 
-# class SigninView(LoginView):
-#     template_name = 'movies/signin.html'
-#     form_class = SigninForm
-#     success_url = reverse_lazy('movies:home') 
 class SigninView(FormView):
     template_name = 'movies/signin.html'
     form_class = SigninForm
@@ -534,23 +520,6 @@ class SigninView(FormView):
     def form_invalid(self, form):
         messages.error(self.request, "Invalid username or password!")
         return super().form_invalid(form)
-
-# @method_decorator(never_cache, name='dispatch')
-# class CustomCsrfFailureView(TemplateView):
-#     template_name = '403_forbidden.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['reason'] = self.request.GET.get('reason', '')
-#         # context['title'] = 'Security Error'
-#         return context
-
-#     # Ensure the HTTP status code is always 403
-#     def render_to_response(self, context, **kwargs):
-#         kwargs['status'] = 403
-#         return super().render_to_response(context, **kwargs)
-def handler403(request:HttpRequest, exception:RawPostDataException):
-    render(request, "movies/403_forbidden.html", {"exceptions": [exception]})
 
 
 # class SignoutView(LogoutView):

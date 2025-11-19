@@ -26,11 +26,5 @@ urlpatterns = [
 ]
 
 
-# def csrf_failure_handler(request, reason=""):
-#     return CustomCsrfFailureView.as_view()(request, reason=reason)
-
-# handler403 = csrf_failure_handler
-handler403 = "movies.views.handler403"
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

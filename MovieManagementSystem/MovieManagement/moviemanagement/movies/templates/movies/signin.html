@@ -24,13 +24,14 @@
                 <button type="submit">Log In</button>
                 <button type="reset">Cancel</button>
             </div>
-            {% if signin %}
+            {% comment %} {% if signin %} {% endcomment %}
                 {% if messages %}
                     {% for message in messages %}
                         <div class="messages">{{ message }}</li>
                     {% endfor %}
                 {% endif %}
-            {% endif %}
+            {% comment %} {% endif %} {% endcomment %}
+            <p>Don't have an account ? <a href="{% url 'movies:registration' %}" >Create Account</a></p>
         </form>
     </div>
     <script>

@@ -12,41 +12,37 @@
         <form method="post" class="registration-form">
             {% csrf_token %}
             {% comment %} {{ form.as_p }} {% endcomment %}
+            {{ form.non_field_errors }}
+
+            {% for field in form.visible_fields %}
             <div>
-                <label for="{{ form.username.id_for_label }}">Username</label>
-                {% comment %} <input type="text" name="username"/> {% endcomment %}
-                {{ form.username }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                
+                {{ field }}
+                
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+
+                {% comment %} {% if field.help_text %}
+                    <p class="helptext">{{ field.help_text }}</p>
+                {% endif %} {% endcomment %}
             </div>
-            <div>
-                <label for="{{ form.user_role.id_for_label }}">User Role</label>
-                <select name="{{ form.user_role.name }}">
-                {% for value, text in form.user_role.field.choices %}
-                    <option value="{{ value }}" {% if form.user_role.value == value %}selected{% endif %}>
-                        {{ text }}
-                    </option>
-                {% endfor %}
-                </select>
-            </div>
-            <div>
-                <label for="{{ form.password1.id_for_label }}">Password</label>
-                {% comment %} <input type="password" name="password"/> {% endcomment %}
-                {{ form.password1 }}
-            </div>
-            <div>
-                <label for="{{ form.password2.id_for_label }}">Password Confirmation</label>
-                {{ form.password2 }}
-            </div>
+            {% endfor %}
             <div class="signin-btn">
                 <button type="submit">Log In</button>
                 <button type="reset">Cancel</button>
             </div>
-            {% if registration %}
+            {% comment %} {% if registration %} {% endcomment %}
                 {% if messages %}
                     {% for message in messages %}
                         <div class="messages">{{ message }}</li>
                     {% endfor %}
                 {% endif %}
-            {% endif %}
+            {% comment %} {% endif %} {% endcomment %}
+            <p>Already have an account ? <a href="{% url 'movies:signin' %}">SignIn</a></p>
         </form>
     </div>
 </body>
