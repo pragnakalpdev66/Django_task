@@ -583,7 +583,8 @@ footer {
 .add-people-container form,
 .add-review-container form,
 .add-review-container .movie-title-bar,
-.signin-container form {
+.signin-container form,
+.registration-container form {
     max-width: 600px;
     margin: 0 auto;
     background-color: var(--card);
@@ -594,6 +595,10 @@ footer {
     flex-direction: column;
     gap: 1.2rem;
 }
+.signin-container,
+.registration-container {
+    padding: 10% 0;
+}
 
 .add-review-container .movie-title-bar {
     margin-bottom: 1.5rem;
@@ -602,7 +607,9 @@ footer {
 
 .add-movie-container h1,
 .add-genre-container h1,
-.add-people-container h1 {
+.add-people-container h1,
+.registration-container h1,
+.signin-container h1 {
     text-align: center;
     color: var(--bg2);
     font-size: 1.8rem;
@@ -616,7 +623,8 @@ footer {
 .cast-form label,
 .lang-form label,
 .add-review-container label,
-.signin-container label {
+.signin-container label,
+.registration-container label {
     font-weight: 600;
     margin-bottom: 0.4rem;
     color: var(--text);
@@ -628,7 +636,8 @@ footer {
 .add-movie-container select, .add-people-container select,
 .cast-form select, .lang-form select, .cast-form input[type="text"],
 .add-review input[type="number"], .add-review textarea,
-.signin-container input[type="text"], .signin-container input[type="password"] {
+.signin-container input[type="text"], .signin-container input[type="password"],
+.registration-container input, .registration-form select {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #ccc;

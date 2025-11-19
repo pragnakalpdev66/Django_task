@@ -8,29 +8,37 @@
 </head>
 <body>
     <div class="signin-container">
+        <h1>Log-In</h1>
         <form method="post">
             {% csrf_token %}
             {% comment %} {{ form.as_p }} {% endcomment %}
             <div>
-                <label for={{ form.username.id_for_label }}>Username</label>
+                <label for="username">Username</label>
                 <input type="text" name="username"/>
             </div>
             <div>
-                <label for={{ form.password.id_for_label }}>Password</label>
+                <label for="password">Password</label>
                 <input type="password" name="password"/>
             </div>
             <div class="signin-btn">
                 <button type="submit">Log In</button>
                 <button type="reset">Cancel</button>
             </div>
-            {% if messages %}
-                <ul class="messages">
+            {% if signin %}
+                {% if messages %}
                     {% for message in messages %}
-                        <li class="{{ message.tags }}">{{ message }}</li>
+                        <div class="messages">{{ message }}</li>
                     {% endfor %}
-                </ul>
+                {% endif %}
             {% endif %}
         </form>
     </div>
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                window.location.reload(true); 
+            }
+        });
+    </script>
 </body>
 </html>

@@ -3,6 +3,7 @@ from django.views import View # type: ignore
 from django.views.generic import TemplateView, ListView, DeleteView, FormView, View # type: ignore
 from django.views.decorators.csrf import csrf_protect # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
+from django.views.decorators.cache import never_cache # type: ignore
 from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLanguage, Review
 from datetime import date
 from django.urls import reverse_lazy, reverse, resolve # type: ignore
@@ -14,7 +15,7 @@ from django.contrib.auth import login, logout, authenticate # type: ignore
 from .form import RegistrationForm, SigninForm # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # type: ignore
 from .mixins import AdminRequiredMixin, UserAccessMixin
-
+from django.http import HttpRequest, RawPostDataException # type: ignore
 
 # Home
 class HomePageView(TemplateView):
@@ -483,6 +484,7 @@ class AddReview(UserAccessMixin, TemplateView):
 
         return redirect('movies:movieDetail', movie_id=movie.id)
 
+        
         # Authentication
 
 # class RegistrationView(FormView):
@@ -522,7 +524,7 @@ class SigninView(FormView):
 
         if user is not None:
             login(self.request, user)
-            messages.success(self.request, f"Welcome back, {user.username}!")
+            # messages.success(self.request, f"Welcome back, {user.username}!")
             return redirect('movies:home')
 
         messages.error(self.request, "Invalid login credentials!")
@@ -532,6 +534,24 @@ class SigninView(FormView):
     def form_invalid(self, form):
         messages.error(self.request, "Invalid username or password!")
         return super().form_invalid(form)
+
+# @method_decorator(never_cache, name='dispatch')
+# class CustomCsrfFailureView(TemplateView):
+#     template_name = '403_forbidden.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['reason'] = self.request.GET.get('reason', '')
+#         # context['title'] = 'Security Error'
+#         return context
+
+#     # Ensure the HTTP status code is always 403
+#     def render_to_response(self, context, **kwargs):
+#         kwargs['status'] = 403
+#         return super().render_to_response(context, **kwargs)
+def handler403(request:HttpRequest, exception:RawPostDataException):
+    render(request, "movies/403_forbidden.html", {"exceptions": [exception]})
+
 
 # class SignoutView(LogoutView):
 #     next_page = reverse_lazy('movies:signin')

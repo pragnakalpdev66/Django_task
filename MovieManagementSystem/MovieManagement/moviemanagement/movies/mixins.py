@@ -9,7 +9,7 @@ class AdminRequiredMixin(UserPassesTestMixin):
 
     def handle_no_permission(self):
         messages.error(self.request, 'You do not have permission to access this page.')
-        # return redirect('movies:home')  
+        return redirect('movies:home')  
 
 class UserAccessMixin(LoginRequiredMixin):
     """Allow only logged-in regular users to add reviews."""

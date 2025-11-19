@@ -1,13 +1,53 @@
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Log In</button>
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'movies/css/style.css' %}">
+</head>
+<body>
+    <div class="registration-container">
+        <h1>Registration</h1>
+        <form method="post" class="registration-form">
+            {% csrf_token %}
+            {% comment %} {{ form.as_p }} {% endcomment %}
+            <div>
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {% comment %} <input type="text" name="username"/> {% endcomment %}
+                {{ form.username }}
+            </div>
+            <div>
+                <label for="{{ form.user_role.id_for_label }}">User Role</label>
+                <select name="{{ form.user_role.name }}">
+                {% for value, text in form.user_role.field.choices %}
+                    <option value="{{ value }}" {% if form.user_role.value == value %}selected{% endif %}>
+                        {{ text }}
+                    </option>
+                {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                {% comment %} <input type="password" name="password"/> {% endcomment %}
+                {{ form.password1 }}
+            </div>
+            <div>
+                <label for="{{ form.password2.id_for_label }}">Password Confirmation</label>
+                {{ form.password2 }}
+            </div>
+            <div class="signin-btn">
+                <button type="submit">Log In</button>
+                <button type="reset">Cancel</button>
+            </div>
+            {% if registration %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="messages">{{ message }}</li>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>

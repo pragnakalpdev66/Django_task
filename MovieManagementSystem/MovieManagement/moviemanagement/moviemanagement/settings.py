@@ -24,9 +24,8 @@ SECRET_KEY = 'django-insecure-zp0y5%em=wj2&#r0t(4f11az-je200r1)%--rgyg%xhjc*-koz
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS =[]
+# ALLOWED_HOSTS = ['movies.com', '127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -56,6 +55,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 ROOT_URLCONF = 'moviemanagement.urls'
 
