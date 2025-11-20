@@ -24,9 +24,8 @@ SECRET_KEY = 'django-insecure-zp0y5%em=wj2&#r0t(4f11az-je200r1)%--rgyg%xhjc*-koz
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS =[]
+# ALLOWED_HOSTS = ['movies.com', '127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -40,6 +39,13 @@ INSTALLED_APPS = [
     'movies',
 ]
 
+AUTH_USER_MODEL = 'movies.Users' 
+
+LOGIN_URL = 'movies:signin'
+LOGIN_REDIRECT_URL = 'movies:home'
+LOGOUT_REDIRECT_URL = 'movies:signin'
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,12 +56,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
 ROOT_URLCONF = 'moviemanagement.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'movies/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

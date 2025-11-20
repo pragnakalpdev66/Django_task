@@ -68,13 +68,29 @@ a {
     align-items: center;
 }
 
+/* .whole-container {
+    position: relative;
+} */
 /* Footer*/
 footer {
+    /* position: absolute;
     text-align: center;
     background: var(--nav-bg);
     color: var(--nav-text);
     padding: 20px;
-    margin-bottom: 0;
+    margin-bottom: 0; */
+    position: fixed;
+    bottom: 0;      
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: var(--nav-bg);
+    color: var(--nav-text);
+    padding: 0.8rem;
+    text-align: center;
+    align-content: center;
+    margin-top: 2rem;
+    height: 3rem;
 }
 
 /* -- Home Page -- */
@@ -174,11 +190,7 @@ footer {
 
 /* MOVIE BLOCK */
 .movie-block,
-.people-section
-/* , */
-/* .directed-movies, */
-/* .acted-movies  */
-{
+.people-section {
     /* display: flex;
     flex-wrap: wrap; */
     display: grid;
@@ -273,16 +285,6 @@ footer {
     border-radius: 3px;
     align-self: flex-start;
 }
-/* .movie-card a {
-    text-decoration: none;
-    display: block;
-}
-*/
-
-
-
-
-
 
 /* Responsive Tweaks */
 @media (max-width: 768px) {
@@ -294,42 +296,6 @@ footer {
         height: 220px;
     }
 } 
-
-
-/* Movie List Page*/
-/* .movie-container {
-    padding: 2rem 10rem;
-}
-
-.head-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.head-container h2 {
-    font-size: 1.6rem;
-    color: var(--text);
-}
-
-.head-container button {
-    background-color: var(--bg2);
-    border: none;
-    border-radius: 5px;
-    padding: 10px 14px;
-}
-
-.head-container button a {
-    color: var(--nav-text);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.head-container button:hover {
-    background-color: #2a3a4f;
-    transform: scale(1.03);
-} */
 
 /* Filter Section */
 .filter-container {
@@ -495,10 +461,6 @@ footer {
     border-bottom: 1px solid #ddd;
 }
 
- /* {
-    color: #e0a800;
-} */
-
 /* Action Buttons */
 .movie-detail button,
 .person-detail button {
@@ -636,7 +598,9 @@ footer {
 .add-genre-container form,
 .add-people-container form,
 .add-review-container form,
-.add-review-container .movie-title-bar {
+.add-review-container .movie-title-bar,
+.signin-container form,
+.registration-container form {
     max-width: 600px;
     margin: 0 auto;
     background-color: var(--card);
@@ -647,6 +611,10 @@ footer {
     flex-direction: column;
     gap: 1.2rem;
 }
+.signin-container,
+.registration-container {
+    padding: 5% 0;
+}
 
 .add-review-container .movie-title-bar {
     margin-bottom: 1.5rem;
@@ -655,20 +623,32 @@ footer {
 
 .add-movie-container h1,
 .add-genre-container h1,
-.add-people-container h1 {
+.add-people-container h1,
+.registration-container h1,
+.signin-container h1 {
     text-align: center;
     color: var(--bg2);
     font-size: 1.8rem;
     margin-bottom: 1rem;
 }
-
+.registration-form p,
+.signin-container p {
+    margin-top: 1rem;
+}
+.registration-form a,
+.signin-container a {
+    color: var(--hover-search);
+    font-size: large;
+}
 
 .add-movie-container label,
 .add-genre-container label,
 .add-people-container label,
 .cast-form label,
 .lang-form label,
-.add-review-container label {
+.add-review-container label,
+.signin-container label,
+.registration-container label {
     font-weight: 600;
     margin-bottom: 0.4rem;
     color: var(--text);
@@ -679,7 +659,9 @@ footer {
 .add-movie-container textarea, .add-people-container textarea,
 .add-movie-container select, .add-people-container select,
 .cast-form select, .lang-form select, .cast-form input[type="text"],
-.add-review input[type="number"], .add-review textarea {
+.add-review input[type="number"], .add-review textarea,
+.signin-container input[type="text"], .signin-container input[type="password"],
+.registration-container input, .registration-form select {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #ccc;
@@ -694,7 +676,8 @@ footer {
 .add-movie-container textarea:focus, .add-people-container textarea:focus,
 .add-movie-container select:focus, .add-people-container select:focus,
 .cast-form select:focus, .lang-form select:focus, .cast-form input:focus,
-.add-review-container input:focus, .add-review-container textarea:focus {
+.add-review-container input:focus, .add-review-container textarea:focus,
+.signin-container input:focus {
     border-color: var(--bg2);
     box-shadow: 0 0 4px rgba(51,72,95,0.3);
     outline: none;
@@ -747,7 +730,8 @@ footer {
 .add-genre-container .btn,
 .add-people-container .btn,
 .btn-add-cast-lang,
-.review-btn {
+.review-btn,
+.signin-btn {
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -759,7 +743,8 @@ footer {
 .add-people-container .btn button,
 .btn-add-cast-lang button,
 .action-bar button,
-.review-btn button {
+.review-btn button,
+.signin-btn button {
     flex: 1;
     padding: 10px 14px;
     background-color: var(--bg2);
@@ -774,7 +759,8 @@ footer {
 .add-movie-container .btn button:hover,
 .add-genre-container .btn button:hover,
 .add-people-container .btn button:hover,
-.review-btn button:hover {
+.review-btn button:hover,
+.signin-btn button:hover {
     background-color: #2a3a4f;
     transform: scale(1.02);
 }
@@ -885,23 +871,7 @@ footer {
     text-decoration: none;
     transition: background-color 0.3s ease, transform 0.1s ease;
 }
-/* .action-btns a {
-    text-decoration: none;
-    color: var(--nav-text); 
-} */
 
-/* .genres-btns {
-    display: inline-flex;
-    flex-wrap: wrap;
-    background-color: var(--bg2);
-    color: var(--nav-text);
-    border: none;
-    border-radius: 4px;
-    padding: 6px 10px;
-    margin-right: 6px;
-    cursor: pointer;
-    font-size: 14px;
-} */
 @media (max-width: 600px) {
   .genre-header {
     flex-direction: column;
@@ -960,4 +930,32 @@ footer {
     color: var(--nav-text);
     text-decoration: none;
     display: block;
+}
+
+
+#toast-container {
+    position: fixed;
+    /* bottom: 20px;
+    right: 20px; */
+    display: flex;
+    /* flex-direction: column; */
+    gap: 10px;
+    /* z-index: 1000; */
+}
+
+.toast {
+    background-color: var(--movie-poster);
+    color: var(--text);
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.5s, transform 0.5s;
+    transform: translateY(100%);
+    max-width: 300px; 
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
 }

@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404 # type: ignore
 from django.views import View # type: ignore
-from django.views.generic import TemplateView, ListView, DeleteView # type: ignore
+from django.views.generic import TemplateView, ListView, DeleteView, FormView, View # type: ignore
 from django.views.decorators.csrf import csrf_protect # type: ignore
 from django.utils.decorators import method_decorator # type: ignore
+from django.views.decorators.cache import never_cache # type: ignore
 from movies.models import Genre, Person, Movie, MovieCast, Language, MovieLanguage, Review
 from datetime import date
-from django.urls import reverse_lazy, reverse # type: ignore
+from django.urls import reverse_lazy, reverse, resolve # type: ignore
 from django.contrib import messages # type: ignore
 from django.db.models import Avg # type: ignore 
+from django.contrib.auth.views import LoginView, LogoutView # type: ignore
+from django.views.generic.edit import FormView # type: ignore
+from django.contrib.auth import login, logout, authenticate # type: ignore
+from .form import RegistrationForm, SigninForm # type: ignore
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # type: ignore
+from .mixins import AdminRequiredMixin, UserAccessMixin
 
 # Home
 class HomePageView(TemplateView):
@@ -39,7 +46,8 @@ class HomePageView(TemplateView):
         return queryset
 
 # Movie
-class MoviePageView(ListView):
+# class MoviePageView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+class MoviePageView(UserAccessMixin, ListView):
     model = Movie
     template_name = 'movies/movie.html'
     context_object_name = 'movies'
@@ -76,7 +84,7 @@ class MoviePageView(ListView):
         
 
 @method_decorator(csrf_protect, name='dispatch')
-class AddEditMovieView(View):
+class AddEditMovieView(LoginRequiredMixin, AdminRequiredMixin, View):
     template_name = 'movies/addmovie.html'
 
     def get(self, request, movie_id=None, *args, **kwargs):
@@ -171,7 +179,7 @@ class AddEditMovieView(View):
         }
         return render(request, self.template_name, context)
 
-class DeleteMovie(DeleteView):
+class DeleteMovie(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     model = Movie
     success_url = reverse_lazy("movies:movie")
     template_name = 'movies/confirmation.html'
@@ -194,7 +202,8 @@ class MovieDetailView(TemplateView):
         return render(request, self.template_name, context)
 
 #People #peoplepageview
-class PersonListView(ListView):
+# class PersonListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
+class PersonListView(UserAccessMixin, ListView):
     model = Person
     template_name = 'movies/people.html'
     context_object_name = 'people'
@@ -223,14 +232,8 @@ class PersonListView(ListView):
         print(f"Final queryset count: {queryset.count()}") ##
 
         return queryset#.order_by('person_name')
-
-    # def get_context_data(self, **kwargs):
-    #     # context = super().get_context_data(**kwargs)
-    #     context = {'role_choices': Person.Role.choices}
-    #     context['people'] = Person.objects.all() # & Person.Role.choices # have to add query
-    #     return context
     
-class DeletePeople(DeleteView):
+class DeletePeople(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     model = Person
     success_url = reverse_lazy("movies:people")
     template_name = 'movies/confirmation.html'
@@ -251,7 +254,7 @@ class PersonDetailView(TemplateView):
         return render(request, self.template_name, context)
 
 @method_decorator(csrf_protect, name='dispatch')
-class AddEditPeopleView(View):
+class AddEditPeopleView(LoginRequiredMixin, AdminRequiredMixin, View):
     template_name = 'movies/addpeople.html'
 
     def get(self, request, person_id=None, *args, **kwargs):
@@ -301,14 +304,9 @@ class AddEditPeopleView(View):
         
         return redirect('movies:people')
 
-        # context = {
-        #     'person': get_object_or_404(Person, id=person_id) if person_id else None,
-        #     'role_choices': Person.Role.choices
-        # }
-        # return render(request, self.template_name, context)
-
 # Genre
-class GenrePageView(TemplateView):
+# class GenrePageView(LoginRequiredMixin, AdminRequiredMixin, TemplateView):
+class GenrePageView(UserAccessMixin, TemplateView):
     template_name = 'movies/genre.html'
 
     def get_context_data(self, **kwargs):
@@ -316,26 +314,8 @@ class GenrePageView(TemplateView):
         context['genres'] = Genre.objects.all()
         return context
 
-# @method_decorator(csrf_protect, name='dispatch')
-# class AddGenreView(View):
-#     template_name = 'movies/addgenre.html'
-
-#     def get(self, request, *args, **kwargs):
-#         return render(request, self.template_name)
-
-#     def post(self, request, *args, **kwargs):
-#         print("Entering AddGenreView POST block")
-#         genre_name = request.POST.get('genre_name')
-#         try: 
-#             if genre_name:
-#                 Genre.objects.create(genre_name=genre_name)
-#             return redirect('movies:genre')
-#         except Exception as e:
-#             messages.error(request, f"{genre_name} already been added!")
-#         return render(request, self.template_name)
-
 @method_decorator(csrf_protect, name='dispatch')
-class AddEditGenreView(View):
+class AddEditGenreView(LoginRequiredMixin, AdminRequiredMixin, View):
     template_name = 'movies/addgenre.html'
 
     def get(self, request, genre_id=None, *args, **kwargs):
@@ -375,24 +355,14 @@ class AddEditGenreView(View):
             return redirect(self.request.path)
 
 
-class DeleteGenre(DeleteView):
+class DeleteGenre(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     model = Genre
     success_url = reverse_lazy("movies:genre")
     template_name = 'movies/confirmation.html'
-
-    # def get(self, request, id):
-    #     genre = get_object_or_404(Genre, id=id)
-    #     return render(request, self.template_name, {'genre': genre})
-
-    # def post(self, request, id):
-    #     genre = get_object_or_404(Genre, id=id)
-    #     genre.delete()
-    #     messages.success(request, f"Genre '{genre.name}' deleted successfully.")
-    #     return redirect('movies:genre')
     
 # cast and lang
 @method_decorator(csrf_protect, name='dispatch')
-class ManageCastLanguagesView(View):
+class ManageCastLanguagesView(LoginRequiredMixin, AdminRequiredMixin, View):
     template_name = 'movies/manage_cast_language.html'
 
     def get(self, request, movie_id, *args, **kwargs):
@@ -460,7 +430,7 @@ class ManageCastLanguagesView(View):
         return redirect(request.path)
     
 
-class RemoveCast(DeleteView):
+class RemoveCast(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     model = MovieCast
     
     def get(self, request, *args, **kwargs):
@@ -470,7 +440,7 @@ class RemoveCast(DeleteView):
         movie_id = self.object.movie_name.id
         return reverse("movies:manage_cast_language", kwargs={"movie_id": movie_id})
 
-class RemoveLanguage(DeleteView):
+class RemoveLanguage(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     model = MovieLanguage
 
     def get(self, request, *args, **kwargs):
@@ -482,7 +452,7 @@ class RemoveLanguage(DeleteView):
     
 
 # review
-class AddReview(TemplateView):
+class AddReview(UserAccessMixin, TemplateView):
     template_name = 'movies/addreview.html'
 
     def get(self, request, movie_id, *args, **kwargs):
@@ -512,3 +482,49 @@ class AddReview(TemplateView):
             messages.error(request, f"Error while adding review: {e}")
 
         return redirect('movies:movieDetail', movie_id=movie.id)
+
+        
+        # Authentication
+
+class RegistrationView(FormView):
+    template_name = 'movies/registration.html'
+    form_class = RegistrationForm
+    success_url = reverse_lazy('movies:signin')
+
+    def form_valid(self, form):
+        # form.save()
+        user = form.save()
+        messages.success(self.request, "Account created successfully! Please login.")
+        return super().form_valid(form)
+
+class SigninView(FormView):
+    template_name = 'movies/signin.html'
+    form_class = SigninForm
+    success_url = reverse_lazy('movies:home')
+
+    def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            login(self.request, user)
+            # messages.success(self.request, f"Welcome back, {user.username}!")
+            return redirect('movies:home')
+
+        messages.error(self.request, "Invalid login credentials!")
+        return self.form_invalid(form)
+
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Invalid username or password!")
+        return super().form_invalid(form)
+
+
+# class SignoutView(LogoutView):
+#     next_page = reverse_lazy('movies:signin')
+# class SignoutView(View):
+#     def get(self, request):
+#         logout(request)
+#         return redirect('movies:signin')

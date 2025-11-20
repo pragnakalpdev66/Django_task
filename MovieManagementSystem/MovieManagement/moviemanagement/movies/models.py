@@ -1,7 +1,31 @@
 from django.db import models # type: ignore
 from django.db.models import Q # type: ignore
 from django.core.validators import MaxValueValidator, MinValueValidator # type: ignore
+from django.contrib.auth.models import AbstractUser # type: ignore
 
+class Users(AbstractUser):
+    class RoleChoice(models.TextChoices):
+        USER = 'user', 'RegularUser'
+        ADMIN = 'admin', 'SiteAdministrator'
+    
+    user_role = models.CharField(
+        max_length=15,
+        choices=RoleChoice.choices,
+        default=RoleChoice.USER, 
+    )
+
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+        
+    # @property
+    # def is_admin(self):
+    #     return self.user_role == self.RoleChoice.ADMIN
+    
+    # @property
+    # def is_regular_user(self):
+    #     return self.user_role == self.RoleChoice.USER
+    
 class Genre(models.Model):
     genre_name = models.CharField(max_length=50, unique=True)
 
@@ -10,7 +34,6 @@ class Genre(models.Model):
 
 class Person(models.Model):
     class Role(models.TextChoices):
-        # (“actor”, “Actor”), (“director”, “Director”), (“writer”, “Writer”)
         ACTOR = 'actor', 'Actor'
         DIRECTOR = 'director', 'Director'
         WRITER = 'writer', 'Writer'
