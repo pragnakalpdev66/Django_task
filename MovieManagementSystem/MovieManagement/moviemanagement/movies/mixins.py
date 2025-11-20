@@ -1,3 +1,4 @@
+from urllib import request
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin # type: ignore
 from django.shortcuts import redirect, render # type: ignore
 from django.contrib import messages # type: ignore
@@ -10,7 +11,11 @@ class AdminRequiredMixin(UserPassesTestMixin):
 
     def handle_no_permission(self):
         messages.error(self.request, 'You do not have permission to access this page.')
-        return redirect('movies:home') 
+        return redirect('movies:home')
+        return render( self.request, 'movies/home.html',
+            # context
+        ) 
+        return render(request, )
       
 
 class UserAccessMixin(LoginRequiredMixin):
