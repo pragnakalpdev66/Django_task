@@ -54,9 +54,9 @@
                 </div><br>
 
                 <div class="movie-actions">
-                    <button><a href="{% url 'movies:editmovie' movie.id %}">Edit Movie</a></button>
-                    <button><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete Movie</a></button>
-                    <button><a href="{% url 'movies:movie' %}">Back to List</a></button>
+                    <button type="button"><a href="{% url 'movies:editmovie' movie.id %}">Edit Movie</a></button>
+                    <button type="button"><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete Movie</a></button>
+                    <button type="button"><a href="{% url 'movies:movie' %}">Back to List</a></button>
                 </div>
             </div>
         </div>

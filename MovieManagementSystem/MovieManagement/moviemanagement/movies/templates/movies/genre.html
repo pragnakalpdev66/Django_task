@@ -5,7 +5,7 @@
 <div class="genre-container">
     <div class="genre-header">
     <h1>All Genres</h1>
-        <a class="nav-link" href="{% url 'movies:addgenre' %}"><button>+ Add New Genre</button></a>
+        <a class="nav-link" href="{% url 'movies:addgenre' %}"><button type="button">+ Add New Genre</button></a>
     </div>
     <div class="genre-list">
         {% for genre in genres %}
@@ -24,10 +24,10 @@
                     </form>
                 </div>
                 <div>
-                    <a href="{% url 'movies:editgenre' genre.id %}"><button class="genres-btns">Edit</button></a>
+                    <a href="{% url 'movies:editgenre' genre.id %}"><button type="button" class="genres-btns">Edit</button></a>
                 </div>
                 <div>
-                    <a href="{% url 'movies:deletegenre' pk=genre.id %}"><button class="genres-btns">Delete</button></a>
+                    <a href="{% url 'movies:deletegenre' pk=genre.id %}"><button type="button" class="genres-btns">Delete</button></a>
                 </div>
             </div>
         </div>

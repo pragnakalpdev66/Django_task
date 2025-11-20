@@ -12,7 +12,6 @@
     <!-- whole-page -->
     <div class="whole-container">
 
-        <!-- navbar (✔ moved OUTSIDE head tag) -->
         <div class="navbar">
             <div><h3>Movie Management System</h3></div>
             <div class="navbar-navitems">
@@ -31,8 +30,23 @@
                 <div class="nav-item">
                     <a class="nav-link" href="{% url 'movies:addmovie' %}">Add Movie</a>
                 </div>
+                <a class="nav-link" href="{% url 'movies:signout' %}">LogOut</a>
             </div>
+            {% comment %} <div class="account-menu"> {% endcomment %}
+                {% comment %} <button type="button" class="account-button"> {% endcomment %}
+                    {% comment %} <a class="nav-link" href="{% url 'movies:signout' %}">SignOut</a> {% endcomment %}
+                {% comment %} </button> {% endcomment %}
+                {% comment %} <ul class="menu-options">
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#">Theme</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{% url 'movies:signout' %}">SignOut</a></li>
+                </ul> {% endcomment %}
+            {% comment %} </div> {% endcomment %}
         </div>
+
+        <!-- Toast container -->
+        <div id="toast-container"></div>
 
         <main>
             <!-- Page content -->
@@ -44,8 +58,6 @@
         </main>        
     </div>
 
-    <!-- Toast container -->
-    <div id="toast-container"></div>
 
     <script>
         function showToast(message, duration = 3000) {

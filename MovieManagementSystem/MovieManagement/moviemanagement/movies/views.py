@@ -15,6 +15,7 @@ from django.contrib.auth import login, logout, authenticate # type: ignore
 from .form import RegistrationForm, SigninForm # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # type: ignore
 from .mixins import AdminRequiredMixin, UserAccessMixin
+from .models import Users
 
 # Home
 class HomePageView(TemplateView):
@@ -510,21 +511,28 @@ class SigninView(FormView):
 
         if user is not None:
             login(self.request, user)
-            # messages.success(self.request, f"Welcome back, {user.username}!")
             return redirect('movies:home')
+        
+        if user not in Users:
+            messages.error(self.request, "Account not found!")
+            return redirect('movies:registration')
 
-        messages.error(self.request, "Invalid login credentials!")
-        return self.form_invalid(form)
+        # messages.error(self.request, "Invalid login credentials!")
+        # return self.form_invalid(form)
 
 
     def form_invalid(self, form):
         messages.error(self.request, "Invalid username or password!")
         return super().form_invalid(form)
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(self.success_url)
+        return super().dispatch(request, *args, **kwargs)
 
 # class SignoutView(LogoutView):
 #     next_page = reverse_lazy('movies:signin')
-# class SignoutView(View):
-#     def get(self, request):
-#         logout(request)
-#         return redirect('movies:signin')
+class SignoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('movies:signin')

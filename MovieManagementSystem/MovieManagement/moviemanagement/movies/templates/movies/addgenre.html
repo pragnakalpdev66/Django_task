@@ -19,7 +19,7 @@
             </div>
             <div class="btn">
                 <button type="submit">{% if genre %}Update Genre{% else %}Save Genre{% endif %}</button>
-                <button><a href="{% url 'movies:genre' %}">Cancel</a></button>
+                <button type="button"><a href="{% url 'movies:genre' %}">Cancel</a></button>
             </div>
         </form>
         {% if messages %}
