@@ -93,7 +93,7 @@ class MovieLanguage(models.Model):
 
 class Review(models.Model):
     movie_name = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
-    user_name = models.ForeignKey(Person, on_delete=models.CASCADE, null=True, blank=True)
+    user_name = models.ForeignKey(Users, on_delete=models.CASCADE, null=True, blank=True)
     rating = models.PositiveIntegerField(
         validators=[
             MinValueValidator(1, message='rating must be at least 1'), 

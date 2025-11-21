@@ -85,7 +85,7 @@ class MoviePageView(UserAccessMixin, ListView):
         
 
 @method_decorator(csrf_protect, name='dispatch')
-class AddEditMovieView(LoginRequiredMixin, AdminRequiredMixin, View):
+class AddEditMovieView(View):
     template_name = 'movies/addmovie.html'
 
     def get(self, request, movie_id=None, *args, **kwargs):
@@ -469,9 +469,16 @@ class AddReview(UserAccessMixin, TemplateView):
         rating = request.POST.get('rating')
         comment = request.POST.get('comment')
 
+        if request.user.is_authenticated:
+            reviewer = request.user 
+            print("reviewer: ", reviewer)
+        else:
+            return redirect('movies:movieDetail', movie_id=movie.id)
+
         try :
             review = Review.objects.create(
             movie_name=movie,
+            user_name=reviewer, #add here for reviewer
             rating=rating,
             comment=comment,
             )
@@ -479,13 +486,14 @@ class AddReview(UserAccessMixin, TemplateView):
             avg_rating = Review.objects.filter(movie_name=movie).aggregate(Avg('rating'))['rating__avg'] or 0.0
             movie.rating = round(avg_rating, 1)
             movie.save()
+
         except Exception as e:
             messages.error(request, f"Error while adding review: {e}")
 
         return redirect('movies:movieDetail', movie_id=movie.id)
 
-        
-        # Authentication
+
+    # Authentication
 
 class RegistrationView(FormView):
     template_name = 'movies/registration.html'

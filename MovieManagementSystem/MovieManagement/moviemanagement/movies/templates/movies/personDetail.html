@@ -20,8 +20,10 @@
                 <p><strong>Born:</strong> {{ person.birth_date }}</p>
                 <p><strong>Total Movies:</strong>{% if acted_movie_casts %} {{ person.moviecast_set.count }} movies acted {% else %} {{ person.directed_movies.count }} movies directed{% endif %} </p>
                 <div class="person-action">
-                    <button><a href="{% url 'movies:editpeople' person.id %}">Edit Person</a></button>
-                    <button><a href="{% url 'movies:deletepeople' pk=person.id %}">Delete Person</a></button>
+                    {% if user.user_role == 'admin' %}
+                        <button><a href="{% url 'movies:editpeople' person.id %}">Edit Person</a></button>
+                        <button><a href="{% url 'movies:deletepeople' pk=person.id %}">Delete Person</a></button>
+                    {% endif %}
                     <button><a href="{% url 'movies:people' %}">Back to List</a></button>
                 </div>
             </div>
@@ -74,7 +76,7 @@
                     <a href="{% url 'movies:movieDetail' cast_item.movie_name.id %}">
                         <div class="movie-card">
                             <div class="movie-poster">
-                                {% if movie.poster %}
+                                {% if cast_item.movie_name.poster %}
                                     <img src="{{ cast_item.movie_name.poster.url }}" alt="{{ cast_item.movie_name.title }}">
                                 {% else %}
                                     {% comment %} 🎬 {% endcomment %}
