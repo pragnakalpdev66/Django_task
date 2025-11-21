@@ -5,7 +5,9 @@
 <div class="genre-container">
     <div class="genre-header">
     <h1>All Genres</h1>
-        <a class="nav-link" href="{% url 'movies:addgenre' %}"><button type="button">+ Add New Genre</button></a>
+        {% if user.user_role == 'admin' %}
+            <a class="nav-link" href="{% url 'movies:addgenre' %}"><button type="button">+ Add New Genre</button></a>
+        {% endif %}
     </div>
     <div class="genre-list">
         {% for genre in genres %}
@@ -23,12 +25,14 @@
                         {% comment %} </div> {% endcomment %}
                     </form>
                 </div>
+                {% if user.user_role == 'admin' %}
                 <div>
                     <a href="{% url 'movies:editgenre' genre.id %}"><button type="button" class="genres-btns">Edit</button></a>
                 </div>
                 <div>
                     <a href="{% url 'movies:deletegenre' pk=genre.id %}"><button type="button" class="genres-btns">Delete</button></a>
                 </div>
+                {% endif %}
             </div>
         </div>
         {% empty %}

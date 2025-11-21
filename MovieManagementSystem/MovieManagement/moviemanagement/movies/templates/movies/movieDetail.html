@@ -54,8 +54,10 @@
                 </div><br>
 
                 <div class="movie-actions">
-                    <button type="button"><a href="{% url 'movies:editmovie' movie.id %}">Edit Movie</a></button>
-                    <button type="button"><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete Movie</a></button>
+                    {% if user.user_role == 'admin' %}
+                        <button type="button"><a href="{% url 'movies:editmovie' movie.id %}">Edit Movie</a></button>
+                        <button type="button"><a href="{% url 'movies:deletemovie' pk=movie.id %}">Delete Movie</a></button>
+                    {% endif %}
                     <button type="button"><a href="{% url 'movies:movie' %}">Back to List</a></button>
                 </div>
             </div>
@@ -104,9 +106,16 @@
 
         {% for review in movie.reviews.all %}
         <div class="single-review">
+            <h3>
+                {% if review.user_name %}
+                    {{ review.user_name.username }}
+                {% else %}
+                    Anonymous User
+                {% endif %}
+            </h3>
             <p><strong>Rating:</strong> {{ review.rating }}/10</p>
-            <p>{{ review.comment }}</p>
-            <small>{{ review.created_at }}</small>
+            <p><em>{{ review.comment }}</em></p>
+            <p><small>{{ review.created_at }}</small><p>
         </div>
         {% empty %}
         <p>No reviews yet.</p>

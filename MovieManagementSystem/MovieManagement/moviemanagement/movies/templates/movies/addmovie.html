@@ -22,17 +22,17 @@
 
         <div class="description">
             <label for="description">Description:</label>
-            <textarea name="description" id="description" rows="3" placeholder="Enter short description">{% if movie %}{{ movie.description }}{% endif %}</textarea>
+            <textarea name="description" id="description" rows="3" placeholder="Enter short description" required>{% if movie %}{{ movie.description }}{% endif %}</textarea>
         </div>
 
         <div class="release-year">
             <label for="release_year">Release Year:</label>
-            <input type="number" name="release_year" id="release_year" placeholder="e.g. 2024" value="{% if movie %}{{ movie.release_year }}{% endif %}">
+            <input type="number" name="release_year" id="release_year" placeholder="e.g. 2024" value="{% if movie %}{{ movie.release_year }}{% endif %}" required>
         </div>
 
         <div class="duration">
             <label for="duration" >Duration (in minutes):</label>
-            <input type="number" name="duration" id="duration" placeholder="e.g. 120" value="{% if movie %}{{ movie.duration }}{% endif %}">
+            <input type="number" name="duration" id="duration" placeholder="e.g. 120" value="{% if movie %}{{ movie.duration }}{% endif %}" required>
         </div>
 
         <div class="genre-dropdown">
