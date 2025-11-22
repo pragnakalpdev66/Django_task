@@ -106,16 +106,27 @@
 
         {% for review in movie.reviews.all %}
         <div class="single-review">
-            <h3>
-                {% if review.user_name %}
-                    {{ review.user_name.username }}
-                {% else %}
-                    Anonymous User
-                {% endif %}
-            </h3>
-            <p><strong>Rating:</strong> {{ review.rating }}/10</p>
-            <p><em>{{ review.comment }}</em></p>
-            <p><small>{{ review.created_at }}</small><p>
+            <div>
+                <h3>
+                    {% if review.user_name %}
+                        {{ review.user_name.username }}
+                    {% else %}
+                        Anonymous User
+                    {% endif %}
+                </h3>
+                <p><strong>Rating:</strong> {{ review.rating }}/10</p>
+                <p><em>{{ review.comment }}</em></p>
+                <p><small>{{ review.created_at }}</small><p>
+            </div>
+            {% if request.user == review.user_name %}
+            <div>
+                <button type="button"><a href="{% url 'movies:editreview' movie.id review.id %}">Edit</a></button>
+                <form action="{% url 'movies:deletereview' review.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+            {% endif %}
         </div>
         {% empty %}
         <p>No reviews yet.</p>

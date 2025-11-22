@@ -801,7 +801,7 @@ footer {
     border-radius: 4px;
     margin-bottom: 2rem;
 }
-.cast-list-view, .lang-list-view {
+.cast-list-view, .lang-list-view, .single-review {
     display: flex;
     justify-content: space-between;
     align-items: center;
