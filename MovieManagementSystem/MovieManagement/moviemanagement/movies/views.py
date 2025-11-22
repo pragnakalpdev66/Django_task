@@ -14,7 +14,7 @@ from django.views.generic.edit import FormView # type: ignore
 from django.contrib.auth import login, logout, authenticate # type: ignore
 from .form import RegistrationForm, SigninForm # type: ignore
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # type: ignore
-from .mixins import AdminRequiredMixin, UserAccessMixin
+from .mixins import AdminRequiredMixin, UserAccessMixin, ReviewAuthorMixin
 from .models import Users
 
 # Home
@@ -453,45 +453,69 @@ class RemoveLanguage(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
     
 
 # review
-class AddReview(UserAccessMixin, TemplateView):
+class AddEditReview(ReviewAuthorMixin, View):
     template_name = 'movies/addreview.html'
 
-    def get(self, request, movie_id, *args, **kwargs):
+    def get(self, request, movie_id, review_id=None, *args, **kwargs):
         movie = get_object_or_404(Movie, id=movie_id)
+        review = None
+        if review_id:
+            review = get_object_or_404(Review, id=review_id, movie_name=movie)
 
-        context = { 'movie': movie }
+        context = { 
+            'movie':movie,
+            'review': review 
+        }
 
         return render(request, self.template_name, context)
     
-    def post(self, request, movie_id, *args, **kwargs):
+    def post(self, request, movie_id, review_id=None, *args, **kwargs):
         movie = get_object_or_404(Movie, id=movie_id)
-
+        reviewer = request.user
         rating = request.POST.get('rating')
         comment = request.POST.get('comment')
 
-        if request.user.is_authenticated:
-            reviewer = request.user 
-            print("reviewer: ", reviewer)
-        else:
-            return redirect('movies:movieDetail', movie_id=movie.id)
-
         try :
-            review = Review.objects.create(
-            movie_name=movie,
-            user_name=reviewer, #add here for reviewer
-            rating=rating,
-            comment=comment,
-            )
+            if review_id:
+                review = get_object_or_404(Review, id=review_id)
+                review.rating = request.POST.get('rating')
+                review.comment = request.POST.get('comment')
+                review.save()
+            else:
+                if Review.objects.filter(movie_name=movie, user_name=reviewer).exists():
+                    messages.error(request, "You have already submitted a review for this movie.")
+                    return redirect('movies:movieDetail', movie_id=movie.id)
+                
+                review = Review.objects.create(
+                movie_name=movie,
+                user_name=reviewer, #add here for reviewer
+                rating=rating,
+                comment=comment,
+                )
 
             avg_rating = Review.objects.filter(movie_name=movie).aggregate(Avg('rating'))['rating__avg'] or 0.0
             movie.rating = round(avg_rating, 1)
             movie.save()
 
+            return redirect('movies:movieDetail', movie_id=movie.id)
+
         except Exception as e:
             messages.error(request, f"Error while adding review: {e}")
 
-        return redirect('movies:movieDetail', movie_id=movie.id)
+            return redirect('movies:movieDetail', movie_id=movie.id)
 
+class DeleteReview(ReviewAuthorMixin, DeleteView):
+    model = Review
+    success_url = reverse_lazy("movies:genre")
+    template_name = 'movies/confirmation.html'
+    
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        movie_id = self.object.movie_name.id
+        return reverse("movies:movieDetail", kwargs={"movie_id": movie_id})
+    
 
     # Authentication
 

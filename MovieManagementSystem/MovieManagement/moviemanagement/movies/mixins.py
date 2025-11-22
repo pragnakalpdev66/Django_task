@@ -1,7 +1,8 @@
 from urllib import request
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin # type: ignore
-from django.shortcuts import redirect, render # type: ignore
+from django.shortcuts import redirect, render, get_object_or_404 # type: ignore
 from django.contrib import messages # type: ignore
+from .models import Review
 
 class AdminRequiredMixin(UserPassesTestMixin):
     """Only allow admin role."""
@@ -21,3 +22,12 @@ class UserAccessMixin(LoginRequiredMixin):
 
     def handle_no_permission(self):
         return redirect('movies:signin')
+
+class ReviewAuthorMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        review_id = self.kwargs.get('review_id')
+        if review_id:
+            review = get_object_or_404(Review, id=review_id)
+            return review.user_name == self.request.user
+        # If adding a new review (no review_id), just ensure user is logged in (LoginRequiredMixin handles this)
+        return True

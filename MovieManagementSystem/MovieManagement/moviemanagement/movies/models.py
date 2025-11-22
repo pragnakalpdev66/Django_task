@@ -108,5 +108,9 @@ class Review(models.Model):
             models.CheckConstraint(
                 check=Q(rating__range=(1, 10)),
                 name='rating_in_range'
-            )
+            ),
+            models.UniqueConstraint(
+                fields=['user_name', 'movie_name'], 
+                name='unique_review'
+            ),
         ]
