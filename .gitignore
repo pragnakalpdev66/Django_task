@@ -1,0 +1,9 @@
+# Python compiled files
+__pycache__/
+*.pyc
+
+# Django migrations folder
+*/migrations/
+
+# Environment variables
+.env
