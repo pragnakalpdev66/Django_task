@@ -2,8 +2,5 @@
 __pycache__/
 *.pyc
 
-# Django migrations folder
-*/migrations/
-
 # Environment variables
 .env
